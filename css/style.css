@@ -1,0 +1,94 @@
+body{
+	background: rgb(229,238,193);
+    background: linear-gradient(169deg, rgba(229,238,193,1) 0%, rgba(162,212,171,1) 13%, rgba(62,172,168,1) 41%, rgba(84,122,130,1) 74%, rgba(90,80,80,1) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+body .grid{
+	height: 100%;
+}
+
+body .container{
+	padding-top: 20px;
+}
+
+.navbar{
+	display: block;
+	z-index: 3;
+	position: fixed;
+	left: 0px;
+	height: 100%;
+	width: 60px;
+	background-color: rgb(26, 30, 47);
+	padding: 0 !important;
+	box-shadow: 0 0 8px #000c;
+}
+
+.navbar .menu a.item{
+	display: inline-block;
+	width: 100%;
+	height: 60px;
+	color: #e0e0e0;
+	text-align: center;
+	line-height: 60px;
+	font-size: 20px;
+	cursor: pointer;
+	position: relative;
+}
+.navbar .menu a.item:first-child, .navbar .menu a.item:first-child:hover{
+	background-color: #292533;
+	cursor: auto;
+}
+
+.navbar .menu a.item:hover{
+	background-color: #181226;
+	transition: 0.5s;
+}
+
+.navbar .menu a.item::after{
+	content: "";
+	position: absolute;
+	left: 100%;
+	top: 0px;
+	height: 60px;
+	width: 200px;
+	font-size: 14px;
+	background-color: #161121;
+	border-radius: 0 3px 3px 0;
+	box-shadow: #0006 3px 3px 10px;
+	transition: 0.5s;
+	opacity: 0;
+	display: none;
+}
+
+.navbar .menu a.item:hover::after{
+	display: block;
+	opacity: 1;
+}
+.navbar .menu a.item:first-child::after{
+	content: "รายงานข้อมูลคณะศึกษาดูงาน";
+}
+.navbar .menu a.add.record.item::after{
+	content: "บันทึกข้อมูลคณะศึกษาดูงาน";
+}
+.navbar .menu a.manage.user.item::after{
+	content: "จัดการชื่อผู้ใช้และรหัสผ่าน";
+}
+.navbar .menu a.item:last-child::after{
+	content: "ลงชื่อออก";
+}
+
+.navbar .menu a.item .icon{
+	font-size: 12px;
+}
+
+.filter.setting{
+	background-color: #d6d7d8;
+	border-radius: 3px;
+	font-size: 6px;
+	height: 36px;
+	line-height: 36px;
+	color: #626363;
+}
