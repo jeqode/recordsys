@@ -13,7 +13,6 @@ $(function(){
 			closable: false,
 			allowMultiple: true
 		});
-	manageUserModal();
 });
 function logout(){
 	$.ajax({
@@ -104,6 +103,8 @@ function loadUser(){
 			}else{
 				$('.user.table tbody').html("");
 				$.each(result['data'], function(index, user) {
+					if(user['id'] == 0) return;
+					is_mainuser = (user['id'] == 1) ? " disabled" : "";
 					is_admin = Number(user['is_admin']) ? " checked" : "";
 					$('.user.table tbody').append(
 						`<tr data-id="${user['id']}">
@@ -121,7 +122,7 @@ function loadUser(){
 								</div>
 							</td>
 							<td class="middle aligned">
-								<div class="is_admin ui toggle checkbox">
+								<div class="is_admin ui${is_mainuser} toggle checkbox">
 									<input name="is_admin" type="checkbox" tabindex="0" class="hidden"${is_admin}>
 								</div>
 							</td>
@@ -129,15 +130,15 @@ function loadUser(){
 								<div class="middle aligned inline field">
 									<div class ="ui fluid buttons">
 									<div class="ui teal icon button" onclick="editUserId(${user['id']});"><i class="save outline icon"></i></div>
-									<div class="ui red icon button" onclick="deleteUserId(${user['id']});"><i class="trash alternate outline icon"></i></div>
+									<div class="ui${is_mainuser} red icon button" onclick="if(confirm('ยืนยันการลบชื่อผู้ใช้ ?'))deleteUserId(${user['id']});"><i class="trash alternate outline icon"></i></div>
 									</div>
 								</div>
 							</td>
 						</tr>`
 					);
-					$('.ui.checkbox').checkbox();
-					$('.eye.link.icon').on('click', function(){togglePasswordView(this)});
 				});
+				$('.ui.checkbox').checkbox();
+				$('.eye.link.icon').on('click', function(){togglePasswordView(this)});
 			}   
 		}
 	});		
@@ -221,11 +222,11 @@ function newUser(){
 function deleteUserId(id){
 	$.ajax({
 		url: './api/user/delete.php',
-		dataType: 'text',
+		dataType: 'JSON',
 		type: 'POST',
 		data: { 'id': id},
 		success: function( data, textStatus, jQxhr ){
-			alert(data);
+			alert(data['message']);
 			loadUser();
 		},
 		error: function(jqXHR, exception) {

@@ -1,4 +1,6 @@
 <?php
+$y = (int)date("Y",time()) + 543;
+$m = (int)date("m",time());
 $provinces = array(
     "กระบี่",
     "กรุงเทพมหานคร",
@@ -94,7 +96,6 @@ $months = array(
     "ธันวาคม"
 );
 
-$y = (int)date("Y",time()) + 543;
 $years = array(
 );
 for($i=0;$i<10;$i++){
@@ -109,4 +110,6 @@ $occupations = array(
     "ข้าราชการ",
     "ชาวต่างชาติ"
 );
+
+$thMonth = $months[$m];
 ?>

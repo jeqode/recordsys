@@ -10,7 +10,7 @@ include_once '../user.php';
 $database = new Database();
 $db = $database->getConnection();
 $user = new User($db);
-$user->username = isset($_POST['id']) ? $_POST['id'] : die();
+$user->id = isset($_POST['id']) ? $_POST['id'] : die();
 $stmt = $user->delete();
 $num = $stmt->rowCount();
 

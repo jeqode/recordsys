@@ -6,48 +6,48 @@ class User{
 	public $id;
 	public $username;
 	public $auth_hash;
-    public $is_admin;
+	public $is_admin;
 
-    public function __construct($db){
-        $this->conn = $db;
-    }
+	public function __construct($db){
+		$this->conn = $db;
+	}
 
-    function readAll(){
-    	try {
-    		$query = "SELECT id, username, auth_hash, is_admin FROM {$this->table_name}";
-    		$stmt = $this->conn->prepare($query);
-            $stmt->execute();
-            return $stmt;
-    	} catch (PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-    	}
-    }
+	function readAll(){
+		try {
+			$query = "SELECT id, username, auth_hash, is_admin FROM {$this->table_name}";
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+			return $stmt;
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
+	}
 
-    function readOne(){
-    	try {
+	function readOne(){
+		try {
 			$query = "SELECT id, username, auth_hash, is_admin FROM {$this->table_name} WHERE username = '{$this->username}'";
-    		$stmt = $this->conn->prepare($query);
-            $stmt->execute();
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 			$this->id = $row['id'];
-            $this->username = $row['username'];
-            $this->auth_hash = $row['auth_hash'];
-            $this->is_admin = $row['is_admin'];
-    	} catch (PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-    	}
+			$this->username = $row['username'];
+			$this->auth_hash = $row['auth_hash'];
+			$this->is_admin = $row['is_admin'];
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
 	}
 	
 	function new(){
 		$this->auth_hash = password_hash($this->auth_hash, PASSWORD_ARGON2I);
 		try {
-    		$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->username}', '{$this->auth_hash}', {$this->is_admin})";
-    		$stmt = $this->conn->prepare($query);
+			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->username}', '{$this->auth_hash}', {$this->is_admin})";
+			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;
-    	} catch (PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-    	}
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
 	}
 
 	function editOne(){
@@ -58,6 +58,17 @@ class User{
 				$this->auth_hash = password_hash($this->auth_hash, PASSWORD_ARGON2I);
 				$query = "UPDATE {$this->table_name} SET username='{$this->username}', auth_hash='{$this->auth_hash}', is_admin={$this->is_admin} WHERE id={$this->id}";
 			}
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+			return $stmt;
+		} catch (PDOException $e) {
+			echo $sql . "<br>" . $e->getMessage();
+		}
+	}
+
+	function delete(){
+		try{
+			$query = "DELETE FROM {$this->table_name} WHERE id={$this->id}";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;

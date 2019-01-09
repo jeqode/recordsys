@@ -144,6 +144,11 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						<i class="print icon"></i>
 						พิมพ์รายงาน
 					</div>
+					<div class="ui image label">
+						<img src="img/user.png">
+						<?php echo $_SESSION['user']; ?>
+						<div class="detail"><?php echo date("d",time())." {$thMonth} {$y}"; ?></div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -321,7 +326,6 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 				</div>
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
-					<div class="ui teal ok button">บันทึกทั้งหมด</div>
 				</div>
 			</div>
 
@@ -348,7 +352,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 		<div class="center aligned three column row">
 			<div class="column">
 				<div class="ui raised very padded compact segment">
-					<img class="ui centered tiny circular image" src="img/matthew.png">
+					<img class="ui centered tiny circular image" src="img/user.png">
 					<div class="ui center aligned header">
 						ระบบบันทึกข้อมูลคณะศึกษาดูงาน
 						<div class="ui sub header">
