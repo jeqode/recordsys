@@ -3,15 +3,12 @@ body{
     background: linear-gradient(169deg, rgba(229,238,193,1) 0%, rgba(162,212,171,1) 13%, rgba(62,172,168,1) 41%, rgba(84,122,130,1) 74%, rgba(90,80,80,1) 100%);
     background-repeat: no-repeat;
     background-attachment: fixed;
-    overflow: hidden;
 }
 
-body .grid{
-	height: 100%;
-}
-
-body .container{
-	padding-top: 20px;
+body .wrapper{
+	height: 100% !important;
+	width: 100% !important;
+	overflow: hidden;
 }
 
 .navbar{
@@ -91,4 +88,23 @@ body .container{
 	height: 36px;
 	line-height: 36px;
 	color: #626363;
+}
+
+.main.section{
+	height: 100%;
+	margin-left: 60px;
+	padding: 14px;
+	overflow: hidden;
+}
+
+.main.section .top.attached.segment{
+	height: 80px;;
+}
+.main.section .attached.segment{
+	height: calc(100% - 132px);
+	overflow-y: scroll;
+}
+.main.section .bottom.attached{
+	height: 60px;
+	overflow: hidden;
 }

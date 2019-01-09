@@ -21,7 +21,7 @@
 if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 ?>
 <body>
-	<div class="ui padded grid">
+	<div class="wrapper">
 		<div class="navbar">
 			<div class="menu">
 				<a class="item">
@@ -40,15 +40,12 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 				</a>
 			</div>
 		</div>
-		<div class="one wide column">		
-		</div>
-		<div class="fifteen wide column">
-			<div class="ui raised segments">
-				<div class="ui center aligned segment">
+		<div class="main section">
+				<div class="ui center aligned top attached header">
 					<h3 class="ui header">ข้อมูลคณะศึกษาดูงาน</h3>
 					<div class="sub header">ศูนย์การพัฒนาเขาหินซ้อนอันเนื่องมาจากพระราชดำริ</div>
 				</div>
-				<div class="ui center aligned segment">
+				<div class="ui center aligned attached segment">
 					<div class="ui filter form">
 						<div class="equal width fields">
 							<div class="one wide field">
@@ -135,7 +132,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						</tbody>
 					</table>
 				</div>
-				<div class="ui clearing secondary segment">
+				<div class="ui clearing secondary bottom attached segment">
 					<div class="ui right floated green labeled icon button">
 						<i class="file excel outline icon"></i>
 						ดาวน์โหลดรายงาน
@@ -150,7 +147,6 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						<div class="detail"><?php echo date("d",time())." {$thMonth} {$y}"; ?></div>
 					</div>
 				</div>
-			</div>
 		</div>
 	</div>
 	<?php
@@ -334,17 +330,6 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 				</div>
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
-				</div>
-			</div>
-
-			<div class="delete user mini modal">
-				<div class="ui center aligned header">ลบบัญชีผู้ใช้ ?</div>
-				<div class="content">
-					คุณต้องการลบชื่อผู้ใช้หรือไม่
-				</div>
-				<div class="actions">
-					<div class="ui cancel button">ไม่</div>
-					<div class="ui teal ok button">ลบ</div>
 				</div>
 			</div>
 			';

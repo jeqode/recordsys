@@ -14,7 +14,7 @@ $(function(){
 			closable: false,
 			allowMultiple: true
 		});
-	addRecordModal();
+
 });
 
 function formatDate(date) {
