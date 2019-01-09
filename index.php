@@ -178,7 +178,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid floating labeled icon search dropdown button">
+								<div class="occupation ui fluid floating labeled icon search dropdown button">
 									<i class="user md alternate icon"></i>
 									<input type="hidden" name="occupation">
 									<span class="text">กลุ่มอาชีพ</span>
@@ -208,11 +208,11 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 							<div class="inline field">
 								<div class="ui fluid labeled input">
 									<div class="ui label">อำเภอ</div>
-									<input type="text" name="distric" placeholder="อำเภอ">
+									<input type="text" name="district" placeholder="อำเภอ">
 								</div>
 							</div>
 							<div class="inline field">
-								<div class="ui fluid floating labeled icon search dropdown button">
+								<div class="province ui fluid floating labeled icon search dropdown button">
 									<i class="map marker alternate icon"></i>
 									<input type="hidden" name="province">
 									<span class="text">จังหวัด</span>

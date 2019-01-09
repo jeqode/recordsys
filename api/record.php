@@ -4,8 +4,8 @@ class Record{
 	private $table_name = "RECORDS";
 
 	public $record_time;
-	public $number;
-	public $date;
+	public $doc_number;
+	public $visit_date;
 	public $occupation;
 	public $n_people;
 	public $address;
@@ -44,6 +44,17 @@ class Record{
 			$this->username = $row['username'];
 			$this->auth_hash = $row['auth_hash'];
 			$this->is_admin = $row['is_admin'];
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
+	}
+
+	function new(){
+		try {
+			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->doc_number}', '{$this->visit_date}', '{$this->occupation}', '{$this->n_people}', '{$this->address}', '{$this->district}', '{$this->province}', '{$this->meal_price}', '{$this->meal_quantity}', '{$this->personal_room}', '{$this->personal_room_quantity}', '{$this->group_room}', '{$this->group_room_quantity}', '{$this->meeting_room}')";
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+			return $stmt;
 		} catch (PDOException $e) {
 			echo "Error: " . $e->getMessage();
 		}

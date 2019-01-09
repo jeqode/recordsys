@@ -17,7 +17,7 @@ $stmt = $user->new();
 $num = $stmt->rowCount();
 
 if($num){
-    print("{\"message\": \"เพิ่ม {$stmt->rowCount()} ผู้ใช้สำเร็จ\"}");
+    print("{\"message\": \"เพิ่ม {$num} ผู้ใช้สำเร็จ\"}");
 }else{
     print("{\"message\": ไม่สามารถเพิ่มผู้ใช้ได้ !\"}");
 }

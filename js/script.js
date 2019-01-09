@@ -78,7 +78,7 @@ function addRecordModal(){
 	today = new Date();
 	$('#datetimepicker').calendar({
 		type: 'date',
-		minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+		initialDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
 		text: {
 			days: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
 			months: months,
@@ -112,7 +112,21 @@ function addRecordModal(){
 				return year;
 			}
 		},
-	});	
+	});
+	$('.add.record [name="doc_number"]').val("");
+	$('.add.record #datetimepicker').calendar("set date", new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+	$('.add.record .occupation.dropdown').dropdown("restore defaults");
+	$('.add.record [name="address"]').val("");
+	$('.add.record [name="district"]').val("");
+	$('.add.record .province.dropdown').dropdown("restore defaults");
+	$('.add.record [name="n_people"]').val("");
+	$('.add.record [name="meal_price"]').val("");
+	$('.add.record [name="meal_quantity"]').val("");
+	$('.add.record [name="personal_room"]').val("");
+	$('.add.record [name="personal_room_quantity"]').val("");
+	$('.add.record [name="group_room"]').val("");
+	$('.add.record [name="group_room_quantity"]').val("");
+	$('.add.record [name="meeting_room"]').val("");
 }
 
 function addRecord(){
@@ -130,18 +144,18 @@ function addRecord(){
 	group_room = $('.add.record [name="group_room"]').val();
 	group_room_quantity = $('.add.record [name="group_room_quantity"]').val();
 	meeting_room = $('.add.record [name="meeting_room"]').val();
-	console.log(doc_number,visit_date,occupation,address,district,province,n_people,meal_price,meal_quantity,personal_room,personal_room_quantity,group_room,group_room_quantity,meeting_room);
+
 	$.ajax({
 		url: './api/record/new.php',
 		dataType: 'JSON',
-		type: 'text',
+		type: 'POST',
 		data: { 'doc_number': doc_number,
 				'visit_date': visit_date,
 				'occupation': occupation,
+				'n_people': n_people,
 				'address': address,
 				'district': district,
 				'province': province,
-				'n_people': n_people,
 				'meal_price': meal_price,
 				'meal_quantity': meal_quantity,
 				'personal_room': personal_room,
@@ -151,7 +165,8 @@ function addRecord(){
 				'meeting_room': meeting_room
 			},
 		success: function( data, textStatus, jQxhr ){
-			alert(data);
+			console.log(data['message']);
+			$('.add.record.modal').modal("hide");
 			loadReports();
 		},
 		error: function(jqXHR, exception) {
