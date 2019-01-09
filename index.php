@@ -157,7 +157,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 		if ($_SESSION['is_admin']) {
 			echo '
 			<div class="ui add record modal">
-				<div class="ui center aligned header">บันทึกรายการคณะศึกษาดูงาน</div>
+				<div class="ui center aligned header">บันทึกข้อมูลคณะศึกษาดูงาน</div>
 				<div class="scrolling content">
 					<form class="ui form">
 						<div class="two fields">
@@ -171,16 +171,23 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								<div class="ui calendar" id="datetimepicker">
 									<div class="ui fluid input left icon">
 										<i class="calendar icon"></i>
-										<input type="text" placeholder="วันที่">
+										<input type="text" name="visit_date" placeholder="วันที่">
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid labeled input">
-									<div class="ui label">กลุ่มอาชีพ</div>
-									<input type="text" name="occupation" placeholder="กลุ่มอาชีพ">
+								<div class="ui fluid floating labeled icon search dropdown button">
+									<i class="user md alternate icon"></i>
+									<input type="hidden" name="occupation">
+									<span class="text">กลุ่มอาชีพ</span>
+									<div class="menu">';
+										foreach($occupations as $occupation){
+											echo "<div class=\"item\">".$occupation."</div>";
+										}
+									echo '
+									</div>
 								</div>
 							</div>
 							<div class="inline field">
@@ -207,6 +214,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 							<div class="inline field">
 								<div class="ui fluid floating labeled icon search dropdown button">
 									<i class="map marker alternate icon"></i>
+									<input type="hidden" name="province">
 									<span class="text">จังหวัด</span>
 									<div class="menu">';
 										foreach($provinces as $province){
@@ -266,14 +274,14 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						<div class="ui field">
 							<div class="ui fluid labeled input">
 								<div class="ui label">ห้องประชุม</div>
-								<input type="text" name="meeting_roo," placeholder="ห้องประชุม">
+								<input type="text" name="meeting_room" placeholder="ห้องประชุม">
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
-					<div class="ui teal ok button">บันทึก</div>
+					<div class="ui teal button" onclick="addRecord();">บันทึก</div>
 				</div>
 			</div>
 			';

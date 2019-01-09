@@ -111,5 +111,5 @@ $occupations = array(
     "ชาวต่างชาติ"
 );
 
-$thMonth = $months[$m];
+$thMonth = $months[$m-1];
 ?>

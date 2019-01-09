@@ -1,3 +1,4 @@
+months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษพาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 $(function(){
 	$('.ui.dropdown')
   		.dropdown()
@@ -13,14 +14,28 @@ $(function(){
 			closable: false,
 			allowMultiple: true
 		});
+	addRecordModal();
 });
+
+function formatDate(date) {
+	var d = new Date(date),
+		month = '' + (d.getMonth() + 1),
+		day = '' + d.getDate(),
+		year = d.getFullYear();
+
+	if (month.length < 2) month = '0' + month;
+	if (day.length < 2) day = '0' + day;
+
+	return [year, month, day].join('-');
+}
+
 function logout(){
 	$.ajax({
-	    type: "POST",
-	    url: './api/user/logout.php',
-	    dataType: 'json',
-	    success: function(data) {
-	    	location.reload();
+		type: "POST",
+		url: './api/user/logout.php',
+		dataType: 'json',
+		success: function(data) {
+			location.reload();
 		}
 	});
 	location.reload();
@@ -60,21 +75,103 @@ function loadReports(){
 
 function addRecordModal(){
 	$('.ui.add.record.modal').modal('show');
+	today = new Date();
 	$('#datetimepicker').calendar({
 		type: 'date',
+		minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
 		text: {
 			days: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
-			months: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษพาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+			months: months,
 			monthsShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค..', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
 			today: 'วันนี้',
 			now: 'ตอนนี้',
 			am: 'AM',
 			pm: 'PM'
 		  },
-		formatter: {
+		metadata: {
+			
+		},
 
-		}
+		formatter: {
+			date: function (date, settings) {
+				if (!date) return '';
+				var day = date.getDate();
+				var month = months[date.getMonth()];
+				var year = date.getFullYear() + 543;
+				return day + ' ' + month + ' ' + year;
+			},
+			dayHeader: function (date, settings) {
+				if (!date) return '';
+				var month = months[date.getMonth()];
+				var year = date.getFullYear() + 543;
+				return month + ' ' + year;
+			},
+			monthHeader: function (date, settings) {
+				if (!date) return '';
+				var year = date.getFullYear() + 543;
+				return year;
+			}
+		},
 	});	
+}
+
+function addRecord(){
+	doc_number = $('.add.record [name="doc_number"]').val();
+	visit_date = formatDate($('.add.record #datetimepicker').calendar("get date"));
+	occupation = $('.add.record [name="occupation"]').val();
+	address = $('.add.record [name="address"]').val();
+	district = $('.add.record [name="district"]').val();
+	province = $('.add.record [name="province"]').val();
+	n_people = $('.add.record [name="n_people"]').val();
+	meal_price = $('.add.record [name="meal_price"]').val();
+	meal_quantity = $('.add.record [name="meal_quantity"]').val();
+	personal_room = $('.add.record [name="personal_room"]').val();
+	personal_room_quantity = $('.add.record [name="personal_room_quantity"]').val();
+	group_room = $('.add.record [name="group_room"]').val();
+	group_room_quantity = $('.add.record [name="group_room_quantity"]').val();
+	meeting_room = $('.add.record [name="meeting_room"]').val();
+	console.log(doc_number,visit_date,occupation,address,district,province,n_people,meal_price,meal_quantity,personal_room,personal_room_quantity,group_room,group_room_quantity,meeting_room);
+	$.ajax({
+		url: './api/record/new.php',
+		dataType: 'JSON',
+		type: 'text',
+		data: { 'doc_number': doc_number,
+				'visit_date': visit_date,
+				'occupation': occupation,
+				'address': address,
+				'district': district,
+				'province': province,
+				'n_people': n_people,
+				'meal_price': meal_price,
+				'meal_quantity': meal_quantity,
+				'personal_room': personal_room,
+				'personal_room_quantity': personal_room_quantity,
+				'group_room': group_room,
+				'group_room_quantity': group_room_quantity,
+				'meeting_room': meeting_room
+			},
+		success: function( data, textStatus, jQxhr ){
+			alert(data);
+			loadReports();
+		},
+		error: function(jqXHR, exception) {
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
+	});
 }
 
 function manageUserModal(){
@@ -163,22 +260,22 @@ function editUserId(id){
 			loadUser();
 		},
 		error: function(jqXHR, exception) {
-            if (jqXHR.status === 0) {
-                alert('Not connect.\n Verify Network.');
-            } else if (jqXHR.status == 404) {
-                alert('Requested page not found. [404]');
-            } else if (jqXHR.status == 500) {
-                alert('Internal Server Error [500].');
-            } else if (exception === 'parsererror') {
-                alert('Requested JSON parse failed.');
-            } else if (exception === 'timeout') {
-                alert('Time out error.');
-            } else if (exception === 'abort') {
-                alert('Ajax request aborted.');
-            } else {
-                alert('Uncaught Error.\n' + jqXHR.responseText);
-            }
-        }
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
 	});
 }
 
@@ -200,22 +297,22 @@ function newUser(){
 			loadUser();
 		},
 		error: function(jqXHR, exception) {
-            if (jqXHR.status === 0) {
-                alert('Not connect.\n Verify Network.');
-            } else if (jqXHR.status == 404) {
-                alert('Requested page not found. [404]');
-            } else if (jqXHR.status == 500) {
-                alert('Internal Server Error [500].');
-            } else if (exception === 'parsererror') {
-                alert('Requested JSON parse failed.');
-            } else if (exception === 'timeout') {
-                alert('Time out error.');
-            } else if (exception === 'abort') {
-                alert('Ajax request aborted.');
-            } else {
-                alert('Uncaught Error.\n' + jqXHR.responseText);
-            }
-        }
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
 	});
 }
 
@@ -230,21 +327,21 @@ function deleteUserId(id){
 			loadUser();
 		},
 		error: function(jqXHR, exception) {
-            if (jqXHR.status === 0) {
-                alert('Not connect.\n Verify Network.');
-            } else if (jqXHR.status == 404) {
-                alert('Requested page not found. [404]');
-            } else if (jqXHR.status == 500) {
-                alert('Internal Server Error [500].');
-            } else if (exception === 'parsererror') {
-                alert('Requested JSON parse failed.');
-            } else if (exception === 'timeout') {
-                alert('Time out error.');
-            } else if (exception === 'abort') {
-                alert('Ajax request aborted.');
-            } else {
-                alert('Uncaught Error.\n' + jqXHR.responseText);
-            }
-        }
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
 	});
 }
