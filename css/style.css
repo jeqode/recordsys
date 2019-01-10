@@ -11,6 +11,11 @@ body .wrapper{
 	overflow: hidden;
 }
 
+body .grid{
+	height: 100%;
+	width: 100%;
+}
+
 .navbar{
 	display: block;
 	z-index: 3;
