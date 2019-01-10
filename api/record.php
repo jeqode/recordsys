@@ -34,24 +34,20 @@ class Record{
 		}
 	}
 
-	function readOne(){
+	function new(){
 		try {
-		$query = "SELECT record_time, [number], [date], occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM RECORDS WHERE username = {$this->username}";
+			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->doc_number}', '{$this->visit_date}', '{$this->occupation}', '{$this->n_people}', '{$this->address}', '{$this->district}', '{$this->province}', '{$this->meal_price}', '{$this->meal_quantity}', '{$this->personal_room}', '{$this->personal_room_quantity}', '{$this->group_room}', '{$this->group_room_quantity}', '{$this->meeting_room}')";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			$this->id = $row['id'];
-			$this->username = $row['username'];
-			$this->auth_hash = $row['auth_hash'];
-			$this->is_admin = $row['is_admin'];
+			return $stmt;
 		} catch (PDOException $e) {
 			echo "Error: " . $e->getMessage();
 		}
 	}
 
-	function new(){
-		try {
-			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->doc_number}', '{$this->visit_date}', '{$this->occupation}', '{$this->n_people}', '{$this->address}', '{$this->district}', '{$this->province}', '{$this->meal_price}', '{$this->meal_quantity}', '{$this->personal_room}', '{$this->personal_room_quantity}', '{$this->group_room}', '{$this->group_room_quantity}', '{$this->meeting_room}')";
+	function search($month, $year, $occupation, $province){
+		try{
+			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE occupation LIKE '{$occupation}' AND province LIKE '{$province}' AND month(visit_date) LIKE '{$month}' AND year(visit_date) LIKE '{$year}'";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;

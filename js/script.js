@@ -6,8 +6,7 @@ $(function(){
 	$('.ui.checkbox')
 		.checkbox()
 	;
-	loadReports();
-
+	applyFilter();
 	$('.ui.modal')
 		.modal({
 			blurring: true,
@@ -41,15 +40,25 @@ function logout(){
 	location.reload();
 }
 
-function loadReports(){
+function loadReports(filter){
+	console.log(filter);
 	$.ajax({
-		url: "./api/record/read_all.php",
-		success: function(result){
-			if(result['data'] === undefined || result['data'].lenght == 0){
+		url: "./api/record/search.php",
+		dataType: "JSON",
+		type: "POST",
+		data: {
+			'month': filter.month,
+			'year': filter.year,
+			'occupation': filter.occupation,
+			'province': filter.province
+		},
+		success: function(data, textStatus, jQxhr){
+			console.log(data);
+			if(data['data'] === undefined || data['data'].lenght == 0){
 				$('#records').html("<tr><td class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
 			}else{
 				$('#records').html("");
-				$.each(result['data'], function(index, record) {
+				$.each(data['data'], function(index, record) {
 					$('#records').append(`
 					<tr>
 						<td>${record['doc_number']}</td>
@@ -69,8 +78,39 @@ function loadReports(){
 					
 				});
 			}   
+		},
+		error: function(jqXHR, exception) {
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
 		}
 	});	
+}
+
+function applyFilter(){
+	filter = new Object();
+	filter.month = $('.filter [name="month"]').val()!="" ? $('.filter [name="month"]').val() : "%" ;
+	filter.year = $.isNumeric($('.filter [name="year"]').val())? $('.filter [name="year"]').val() - 543 : "%";
+	filter.occupation = $('.filter [name="occupation"]').val() != "" ? $('.filter [name="occupation"]').val() : "%" ;
+	filter.province = $('.filter [name="province"]').val() != "" ? $('.filter [name="province"]').val() : "%" ;
+	loadReports(filter);
+}
+
+function resetFilter(){
+	$('.filter .dropdown').dropdown("restore defaults");
+	applyFilter();
 }
 
 function addRecordModal(){
