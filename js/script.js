@@ -55,7 +55,7 @@ function loadReports(filter){
 		success: function(data, textStatus, jQxhr){
 			console.log(data);
 			if(data['data'] === undefined || data['data'].lenght == 0){
-				$('#records').html("<tr><td class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
+				$('#records').html("<tr><td colspan=\"12\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
 			}else{
 				$('#records').html("");
 				$.each(data['data'], function(index, record) {
