@@ -142,7 +142,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 						<i class="file excel outline icon"></i>
 						ดาวน์โหลดรายงาน
 					</a>
-					<a href="api/export.php" class="print ui right floated blue labeled icon button">
+					<a href="api/record/print.php" target="_blank" class="print ui right floated blue labeled icon button">
 						<i class="print icon"></i>
 						พิมพ์รายงาน
 					</a>

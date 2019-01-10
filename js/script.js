@@ -107,7 +107,7 @@ function applyFilter(){
 	filter.province = $('.filter [name="province"]').val() != "" ? $('.filter [name="province"]').val() : "%" ;
 	loadReports(filter);
 	$('a.export.excel.button').attr("href","api/record/export.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province);
-	$('a.print.button').attr("href","api/record/export.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province);
+	$('a.print.button').attr("href","api/record/print.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province);
 }
 
 function resetFilter(){
