@@ -138,14 +138,14 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 					</table>
 				</div>
 				<div class="ui clearing secondary bottom attached segment">
-					<div class="ui right floated green labeled icon button">
+					<a href="api/record/export.php" class="export excel ui right floated green labeled icon button">
 						<i class="file excel outline icon"></i>
 						ดาวน์โหลดรายงาน
-					</div>
-					<div class="ui right floated blue labeled icon button">
+					</a>
+					<a href="api/export.php" class="print ui right floated blue labeled icon button">
 						<i class="print icon"></i>
 						พิมพ์รายงาน
-					</div>
+					</a>
 					<div class="ui image label">
 						<img src="img/user.png">
 						<?php echo $_SESSION['user']; ?>
