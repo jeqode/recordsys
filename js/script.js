@@ -284,7 +284,7 @@ function editRecord(time){
 				'meeting_room': meeting_room
 			},
 		success: function( data, textStatus, jQxhr ){
-			console(data);
+			console.log(data);
 			$('.edit.record.modal').modal("hide");
 			applyFilter();
 		},

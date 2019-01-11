@@ -4,7 +4,7 @@
 ?>
 <html>
 <head>
-	<title>ศูนย์การพัฒนาเขาหินซ้อนอันเนื่องมาจากพระราชดำริ</title>
+	<title>ศูนย์ศึกษาการพัฒนาเขาหินซ้อน อันเนื่องมาจากพระราชดำริ</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/reset.css">
@@ -41,7 +41,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 		<div class="main section">
 				<div class="ui center aligned top attached header">
 					<h3 class="ui header">ข้อมูลคณะศึกษาดูงาน</h3>
-					<div class="sub header">ศูนย์การพัฒนาเขาหินซ้อนอันเนื่องมาจากพระราชดำริ</div>
+					<div class="sub header">ศูนย์ศึกษาการพัฒนาเขาหินซ้อน อันเนื่องมาจากพระราชดำริ</div>
 				</div>
 				<div class="ui center aligned attached segment">
 					<div class="ui filter form">
@@ -480,7 +480,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 					<div class="ui center aligned header">
 						ระบบบันทึกข้อมูลคณะศึกษาดูงาน
 						<div class="ui sub header">
-							ศูนย์การพัฒนาเขาหินซ้อนอันเนื่องมาจากพระราชดำริ
+							ศูนย์ศึกษาการพัฒนาเขาหินซ้อน อันเนื่องมาจากพระราชดำริ
 						</div>
 					</div>
 					<div class="ui hidden divider"></div>
