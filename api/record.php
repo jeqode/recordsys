@@ -23,6 +23,31 @@ class Record{
 		$this->conn = $db;
 	}
 
+	function readOne(){
+		try{
+		$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE record_time = '{$this->record_time}'";
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			$this->doc_number = $row['doc_number'];
+			$this->visit_date = $row['visit_date'];
+			$this->occupation = $row['occupation'];
+			$this->n_people = $row['n_people'];
+			$this->address = $row['address'];
+			$this->district = $row['district'];
+			$this->province = $row['province'];
+			$this->meal_price = $row['meal_price'];
+			$this->meal_quantity = $row['meal_quantity'];
+			$this->personal_room = $row['personal_room'];
+			$this->personal_room_quantity = $row['personal_room_quantity'];
+			$this->group_room = $row['group_room'];
+			$this->group_room_quantity = $row['group_room_quantity'];
+			$this->meeting_room = $row['meeting_room'];
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
+	}
+
 	function readAll(){
 		try {
 			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM RECORDS";
@@ -53,6 +78,28 @@ class Record{
 			return $stmt;
 		} catch (PDOException $e) {
 			echo "Error: " . $e->getMessage();
+		}
+	}
+
+	function editOne(){
+		try {
+		$query = "UPDATE {$this->table_name} SET record_time = NOW(), doc_number = '{$this->doc_number}', visit_date = '{$this->visit_date}', occupation = '{$this->occupation}', n_people = '{$this->n_people}', address = '{$this->address}', district = '{$this->district}', province = '{$this->province}', meal_price = '{$this->meal_price}', meal_quantity = '{$this->meal_quantity}', personal_room = '{$this->personal_room}', personal_room_quantity = '{$this->personal_room_quantity}', group_room = '{$this->group_room}', group_room_quantity = '{$this->group_room_quantity}', meeting_room = '{$this->meeting_room}' WHERE record_time = '{$this->record_time}'";
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+		} catch (PDOException $e) {
+			echo "Error: " . $e->getMessage();
+		}
+		return $stmt;
+	}
+
+	function delete(){
+		try{
+			$query = "DELETE FROM {$this->table_name} WHERE record_time = '{$this->record_time}'";
+			$stmt = $this->conn->prepare($query);
+			$stmt->execute();
+			return $stmt;
+		} catch (PDOException $e) {
+			echo $sql . "<br>" . $e->getMessage();
 		}
 	}
 }

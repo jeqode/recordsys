@@ -9,12 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/semantic.min.css">
-	<link rel="stylesheet" href="css/calendar.min.css">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/semantic.min.js"></script>
-	<script src="js/calendar.min.js"></script>
 	<script src="js/script.js"></script>
 </head>
 <?php
@@ -116,7 +114,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 							</div>
 						</div>
 					</div>
-					<table class="ui center aligned celled striped table">
+					<table class="<?php echo ($_SESSION['is_admin'])? "":"not_admin "; ?>ui center aligned celled striped table">
 						<thead>
 							<tr>
 								<th>หมายเลข</th>
@@ -131,6 +129,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								<th>ที่พักกลุ่ม</th>
 								<th>จำนวน (ห้อง)</th>
 								<th>ห้องประชุม</th>
+								<th>แก้ไข/ลบ</th>
 							</tr>
 						</thead>
 						<tbody id="records">
@@ -169,12 +168,10 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								</div>
 							</div>
 							<div class="inline field">
-								<div class="ui calendar" id="datetimepicker">
 									<div class="ui fluid input left icon">
 										<i class="calendar icon"></i>
-										<input type="text" name="visit_date" placeholder="วันที่">
+										<input type="date" name="visit_date" placeholder="วันที่">
 									</div>
-								</div>
 							</div>
 						</div>
 						<div class="two fields">
@@ -283,6 +280,135 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
 					<div class="ui teal button" onclick="addRecord();">บันทึก</div>
+				</div>
+			</div>
+			';
+			
+			echo '
+			<div class="ui edit record modal">
+				<div class="ui center aligned header">บันทึกข้อมูลคณะศึกษาดูงาน</div>
+				<div class="scrolling content">
+					<form class="ui form">
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui fluid labeled input">
+									<div class="ui label">หมายเลขเอกสาร</div>
+									<input type="text" name="doc_number" placeholder="หมายเลขเอกสาร">
+								</div>
+							</div>
+							<div class="inline field">
+									<div class="ui fluid input left icon">
+										<i class="calendar icon"></i>
+										<input type="date" name="visit_date" placeholder="วันที่">
+									</div>
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="inline field">
+								<div class="occupation ui fluid floating labeled icon search dropdown button">
+									<i class="user md alternate icon"></i>
+									<input type="hidden" name="occupation">
+									<span class="text">กลุ่มอาชีพ</span>
+									<div class="menu">';
+										foreach($occupations as $occupation){
+											echo "<div class=\"item\">".$occupation."</div>";
+										}
+									echo '
+									</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="n_people" class="ui label">จำนวน</label>
+									<input type="text" name="n_people" placeholder="จำนวน">
+									<div class="ui basic label">คน</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui field">
+							<div class="ui fluid labeled input">
+								<div class="ui label">หน่วยงาน/ที่อยู่</div>
+								<input type="text" name="address" placeholder="หน่วยงาน/ที่อยู่">
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui fluid labeled input">
+									<div class="ui label">อำเภอ</div>
+									<input type="text" name="district" placeholder="อำเภอ">
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="province ui fluid floating labeled icon search dropdown button">
+									<i class="map marker alternate icon"></i>
+									<input type="hidden" name="province">
+									<span class="text">จังหวัด</span>
+									<div class="menu">';
+										foreach($provinces as $province){
+											echo "<div class=\"item\">".$province."</div>";
+										}
+									echo '
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="meal_price" class="ui label">ราคาอาหารมื้อหลัก</label>
+									<input type="text" name="meal_price" placeholder="ราคาอาหาร">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="meal_quantity" class="ui label">จำนวน</label>
+									<input type="text" name="meal_quantity" placeholder="จำนวน">
+									<div class="ui basic label">ที่</div>
+								</div>
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui fluid labeled input">
+									<div class="ui label">ห้องพักรายบุคคล</div>
+									<input type="text" name="personal_room" placeholder="ห้องพักรายบุคคล">
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="personal_room_quantity" class="ui label">จำนวน</label>
+									<input type="text" name="personal_room_quantity" placeholder="จำนวน">
+									<div class="ui basic label">ห้อง</div>
+								</div>
+							</div>
+						</div>
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui fluid labeled input">
+									<div class="ui label">ห้องพักกลุ่ม</div>
+									<input type="text" name="group_room" placeholder="ห้องพักกลุ่ม">
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="group_room_quantity" class="ui label">จำนวน</label>
+									<input type="text" name="group_room_quantity" placeholder="จำนวน">
+									<div class="ui basic label">ห้อง</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui field">
+							<div class="ui fluid labeled input">
+								<div class="ui label">ห้องประชุม</div>
+								<input type="text" name="meeting_room" placeholder="ห้องประชุม">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="actions">
+					<div class="ui cancel button">ยกเลิก</div>
+					<div class="ui teal button" onclick="editRecord();">บันทึก</div>
 				</div>
 			</div>
 			';

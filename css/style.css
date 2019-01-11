@@ -113,3 +113,7 @@ body .grid{
 	height: 60px;
 	overflow: hidden;
 }
+
+.not_admin.table tr :nth-child(13){
+	display: none;
+}

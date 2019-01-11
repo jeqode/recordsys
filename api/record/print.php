@@ -46,8 +46,10 @@ $num = $stmt->rowCount();
 			</thead>
 			<tbody>
 				<?php
+				$sum = 0;
 				if($num>0){
 					while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+						$sum = $sum + (int)$row['n_people'];
 						echo "
 						<tr>
 							<td align=\"center\" valign=\"middle\">{$row['doc_number']}</td>
@@ -69,7 +71,7 @@ $num = $stmt->rowCount();
 				?>
 				<tr></tr>
 				<tr>
-					<td colspan="12" align="left"><strong>รายงานเมื่อวันที่ <?php echo date("d/m/Y");?> ทั้งหมด <?php echo number_format($num);?> รายการ</strong></td>
+					<td colspan="12" align="left">รายงานเมื่อวันที่ <?php echo date("d/m/Y");?> ทั้งหมด <?php echo number_format($num);?> รายการ จำนวน <?php echo $sum;?> คน</td>
 				</tr>
 			</tbody>
 		</table>

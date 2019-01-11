@@ -13,7 +13,6 @@ $(function(){
 			closable: false,
 			allowMultiple: true
 		});
-
 });
 
 function formatDate(date) {
@@ -41,7 +40,6 @@ function logout(){
 }
 
 function loadReports(filter){
-	console.log(filter);
 	$.ajax({
 		url: "./api/record/search.php",
 		dataType: "JSON",
@@ -53,7 +51,6 @@ function loadReports(filter){
 			'province': filter.province
 		},
 		success: function(data, textStatus, jQxhr){
-			console.log(data);
 			if(data['data'] === undefined || data['data'].lenght == 0){
 				$('#records').html("<tr><td colspan=\"12\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
 			}else{
@@ -65,7 +62,7 @@ function loadReports(filter){
 						<td>${record['visit_date']}</td>
 						<td>${record['occupation']}</td>
 						<td>${record['n_people']}</td>
-						<td>${record['address']} อ.${record['district']} จ.${record['province']}</td>
+						<td>${record['address']} ${record['district']} ${record['province']}</td>
 						<td>${record['meal_price']}</td>
 						<td>${record['meal_quantity']}</td>
 						<td>${record['personal_room']}</td>
@@ -73,9 +70,14 @@ function loadReports(filter){
 						<td>${record['group_room']}</td>
 						<td>${record['group_room_quantity']}</td>
 						<td>${record['meeting_room']}</td>
+						<td class="middle aligned">
+							<div class ="ui buttons">
+								<div class="ui teal icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
+								<div class="ui red icon button" onclick="if(confirm('ยืนยันการลบข้อมูล ?'))deleteRecordByRecordTime('${record['record_time']}');"><i class="trash alternate outline icon"></i></div>
+							</div>
+						</td>
 					</tr>
 					`);
-					
 				});
 			}   
 		},
@@ -118,43 +120,7 @@ function resetFilter(){
 function addRecordModal(){
 	$('.ui.add.record.modal').modal('show');
 	today = new Date();
-	$('#datetimepicker').calendar({
-		type: 'date',
-		initialDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-		text: {
-			days: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'],
-			months: months,
-			monthsShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค..', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
-			today: 'วันนี้',
-			now: 'ตอนนี้',
-			am: 'AM',
-			pm: 'PM'
-		  },
-		metadata: {
-			
-		},
-
-		formatter: {
-			date: function (date, settings) {
-				if (!date) return '';
-				var day = date.getDate();
-				var month = months[date.getMonth()];
-				var year = date.getFullYear() + 543;
-				return day + ' ' + month + ' ' + year;
-			},
-			dayHeader: function (date, settings) {
-				if (!date) return '';
-				var month = months[date.getMonth()];
-				var year = date.getFullYear() + 543;
-				return month + ' ' + year;
-			},
-			monthHeader: function (date, settings) {
-				if (!date) return '';
-				var year = date.getFullYear() + 543;
-				return year;
-			}
-		},
-	});
+	$('.add.record [name="visit_date"]').val(formatDate(today));
 	$('.add.record [name="doc_number"]').val("");
 	$('.add.record #datetimepicker').calendar("set date", new Date(today.getFullYear(), today.getMonth(), today.getDate()));
 	$('.add.record .occupation.dropdown').dropdown("restore defaults");
@@ -173,7 +139,7 @@ function addRecordModal(){
 
 function addRecord(){
 	doc_number = $('.add.record [name="doc_number"]').val();
-	visit_date = formatDate($('.add.record #datetimepicker').calendar("get date"));
+	visit_date = $('.add.record [name="visit_date"]').val();
 	occupation = $('.add.record [name="occupation"]').val();
 	address = $('.add.record [name="address"]').val();
 	district = $('.add.record [name="district"]').val();
@@ -209,7 +175,149 @@ function addRecord(){
 		success: function( data, textStatus, jQxhr ){
 			console.log(data['message']);
 			$('.add.record.modal').modal("hide");
-			loadReports();
+			applyFilter();
+		},
+		error: function(jqXHR, exception) {
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
+	});
+}
+
+function readRecordByRecordTime(time){
+	$.ajax({
+		url: "./api/record/read_one.php",
+		dataType: "JSON",
+		type: "POST",
+		data: {
+			'record_time': time
+		},
+		success: function(data, textStatus, jQxhr){
+			$('.edit.record [name="doc_number"]').val(data['doc_number']);
+			$('.edit.record [name="visit_date"]').val(data['visit_date']);
+			$('.edit.record .occupation.dropdown').dropdown("set selected", data['occupation']);
+			$('.edit.record [name="address"]').val(data['address']);
+			$('.edit.record [name="district"]').val(data['district']);
+			$('.edit.record .province.dropdown').dropdown("set selected", data['province']);
+			$('.edit.record [name="n_people"]').val(data['n_people']);
+			$('.edit.record [name="meal_price"]').val(data['meal_price']);
+			$('.edit.record [name="meal_quantity"]').val(data['meal_quantity']);
+			$('.edit.record [name="personal_room"]').val(data['personal_room']);
+			$('.edit.record [name="personal_room_quantity"]').val(data['personal_room_quantity']);
+			$('.edit.record [name="group_room"]').val(data['group_room']);
+			$('.edit.record [name="group_room_quantity"]').val(data['group_room_quantity']);
+			$('.edit.record [name="meeting_room"]').val(data['meeting_room']);
+			$('.edit.record .teal.button').attr("onclick", "editRecord('"+time+"');");
+			editRecordModal();
+		},
+		error: function(jqXHR, exception) {
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
+	});
+}
+
+function editRecordModal(){
+	$('.ui.edit.record.modal').modal('show');
+}
+
+function editRecord(time){
+	doc_number = $('.edit.record [name="doc_number"]').val();
+	visit_date = $('.edit.record [name="visit_date"]').val();
+	occupation = $('.edit.record [name="occupation"]').val();
+	address = $('.edit.record [name="address"]').val();
+	district = $('.edit.record [name="district"]').val();
+	province = $('.edit.record [name="province"]').val();
+	n_people = $('.edit.record [name="n_people"]').val();
+	meal_price = $('.edit.record [name="meal_price"]').val();
+	meal_quantity = $('.edit.record [name="meal_quantity"]').val();
+	personal_room = $('.edit.record [name="personal_room"]').val();
+	personal_room_quantity = $('.edit.record [name="personal_room_quantity"]').val();
+	group_room = $('.edit.record [name="group_room"]').val();
+	group_room_quantity = $('.edit.record [name="group_room_quantity"]').val();
+	meeting_room = $('.edit.record [name="meeting_room"]').val();
+
+	$.ajax({
+		url: './api/record/edit_one.php',
+		dataType: 'text',
+		type: 'POST',
+		data: { 'record_time': time,
+				'doc_number': doc_number,
+				'visit_date': visit_date,
+				'occupation': occupation,
+				'n_people': n_people,
+				'address': address,
+				'district': district,
+				'province': province,
+				'meal_price': meal_price,
+				'meal_quantity': meal_quantity,
+				'personal_room': personal_room,
+				'personal_room_quantity': personal_room_quantity,
+				'group_room': group_room,
+				'group_room_quantity': group_room_quantity,
+				'meeting_room': meeting_room
+			},
+		success: function( data, textStatus, jQxhr ){
+			console(data);
+			$('.edit.record.modal').modal("hide");
+			applyFilter();
+		},
+		error: function(jqXHR, exception) {
+			console.log(exception);
+			if (jqXHR.status === 0) {
+				alert('Not connect.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				alert('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				alert('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				alert('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				alert('Time out error.');
+			} else if (exception === 'abort') {
+				alert('Ajax request aborted.');
+			} else {
+				alert('Uncaught Error.\n' + jqXHR.responseText);
+			}
+		}
+	});
+}
+
+function deleteRecordByRecordTime(time){
+	$.ajax({
+		url: './api/record/delete.php',
+		dataType: 'JSON',
+		type: 'POST',
+		data: { 'record_time': time},
+		success: function( data, textStatus, jQxhr ){
+			console.log(data['message']);
+			applyFilter();
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -350,7 +458,7 @@ function newUser(){
 				'is_admin': is_admin
 			},
 		success: function( data, textStatus, jQxhr ){
-			alert(data['message']);
+			console.log(data['message']);
 			loadUser();
 		},
 		error: function(jqXHR, exception) {
@@ -380,7 +488,7 @@ function deleteUserId(id){
 		type: 'POST',
 		data: { 'id': id},
 		success: function( data, textStatus, jQxhr ){
-			alert(data['message']);
+			console.log(data['message']);
 			loadUser();
 		},
 		error: function(jqXHR, exception) {
