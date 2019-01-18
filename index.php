@@ -6,11 +6,11 @@
 <head>
 	<title>ศูนย์ศึกษาการพัฒนาเขาหินซ้อน อันเนื่องมาจากพระราชดำริ</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/semantic.min.css">
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+	<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/semantic.min.js"></script>
 	<script src="js/script.js"></script>
@@ -476,7 +476,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 		<div class="center aligned three column row">
 			<div class="column">
 				<div class="ui raised very padded compact segment">
-					<img class="ui centered tiny circular image" src="img/user.png">
+					<img class="ui centered tiny circular image" src="img/logo.jpg">
 					<div class="ui center aligned header">
 						ระบบบันทึกข้อมูลคณะศึกษาดูงาน
 						<div class="ui sub header">
