@@ -29,6 +29,7 @@ if($num>0){
             "address" =>  html_entity_decode($address),
             "district" =>  html_entity_decode($district),
             "province" =>  html_entity_decode($province),
+            "country" =>  html_entity_decode($country),
             "meal_price" =>  $meal_price,
             "meal_quantity" =>  $meal_quantity,
             "personal_room" =>  html_entity_decode($personal_room),

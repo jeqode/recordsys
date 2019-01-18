@@ -11,6 +11,7 @@ class Record{
 	public $address;
 	public $district;
 	public $province;
+	public $country;
 	public $meal_price;
 	public $meal_quantity;
 	public $personal_room;
@@ -25,7 +26,7 @@ class Record{
 
 	function readOne(){
 		try{
-		$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE record_time = '{$this->record_time}'";
+		$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, country, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE record_time = '{$this->record_time}'";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,6 +37,7 @@ class Record{
 			$this->address = $row['address'];
 			$this->district = $row['district'];
 			$this->province = $row['province'];
+			$this->country = $row['country'];
 			$this->meal_price = $row['meal_price'];
 			$this->meal_quantity = $row['meal_quantity'];
 			$this->personal_room = $row['personal_room'];
@@ -50,7 +52,7 @@ class Record{
 
 	function readAll(){
 		try {
-			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM RECORDS";
+			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, country, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM RECORDS";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;
@@ -61,7 +63,7 @@ class Record{
 
 	function new(){
 		try {
-			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->doc_number}', '{$this->visit_date}', '{$this->occupation}', '{$this->n_people}', '{$this->address}', '{$this->district}', '{$this->province}', '{$this->meal_price}', '{$this->meal_quantity}', '{$this->personal_room}', '{$this->personal_room_quantity}', '{$this->group_room}', '{$this->group_room_quantity}', '{$this->meeting_room}')";
+			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->doc_number}', '{$this->visit_date}', '{$this->occupation}', '{$this->n_people}', '{$this->address}', '{$this->district}', '{$this->province}', '{$this->country}', '{$this->meal_price}', '{$this->meal_quantity}', '{$this->personal_room}', '{$this->personal_room_quantity}', '{$this->group_room}', '{$this->group_room_quantity}', '{$this->meeting_room}')";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;
@@ -70,9 +72,9 @@ class Record{
 		}
 	}
 
-	function search($month, $year, $occupation, $province){
+	function search($month, $year, $occupation, $province, $country){
 		try{
-			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE occupation LIKE '{$occupation}' AND province LIKE '{$province}' AND month(visit_date) LIKE '{$month}' AND year(visit_date) LIKE '{$year}'";
+			$query = "SELECT record_time, doc_number, visit_date, occupation, n_people, address, district, province, country, meal_price, meal_quantity, personal_room, personal_room_quantity, group_room, group_room_quantity, meeting_room FROM {$this->table_name} WHERE occupation LIKE '{$occupation}' AND province LIKE '{$province}' AND month(visit_date) LIKE '{$month}' AND year(visit_date) LIKE '{$year}' AND country LIKE '{$country}'";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 			return $stmt;
@@ -83,9 +85,10 @@ class Record{
 
 	function editOne(){
 		try {
-		$query = "UPDATE {$this->table_name} SET record_time = NOW(), doc_number = '{$this->doc_number}', visit_date = '{$this->visit_date}', occupation = '{$this->occupation}', n_people = '{$this->n_people}', address = '{$this->address}', district = '{$this->district}', province = '{$this->province}', meal_price = '{$this->meal_price}', meal_quantity = '{$this->meal_quantity}', personal_room = '{$this->personal_room}', personal_room_quantity = '{$this->personal_room_quantity}', group_room = '{$this->group_room}', group_room_quantity = '{$this->group_room_quantity}', meeting_room = '{$this->meeting_room}' WHERE record_time = '{$this->record_time}'";
+		$query = "UPDATE {$this->table_name} SET record_time = NOW(), doc_number = '{$this->doc_number}', visit_date = '{$this->visit_date}', occupation = '{$this->occupation}', n_people = '{$this->n_people}', address = '{$this->address}', district = '{$this->district}', province = '{$this->province}', country = '{$this->country}', meal_price = '{$this->meal_price}', meal_quantity = '{$this->meal_quantity}', personal_room = '{$this->personal_room}', personal_room_quantity = '{$this->personal_room_quantity}', group_room = '{$this->group_room}', group_room_quantity = '{$this->group_room_quantity}', meeting_room = '{$this->meeting_room}' WHERE record_time = '{$this->record_time}'";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
+			echo $query;
 		} catch (PDOException $e) {
 			echo "Error: " . $e->getMessage();
 		}

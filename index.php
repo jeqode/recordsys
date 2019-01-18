@@ -45,72 +45,91 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 				</div>
 				<div class="ui center aligned attached segment">
 					<div class="ui filter form">
-						<div class="equal width fields">
+						<div class="fields">
 							<div class="one wide field">
 									<div class="filter setting"><i class="filter icon"></i></div>
 							</div>
-							<div class="three wide field">
-								<div class="month ui floating fluid dropdown labeled search icon button">
-									<i class="calendar alternate outline icon"></i>
-									<input type="hidden" name="month" onchange="applyFilter();">
-									<span class="text">เดือน</span>
-									<div class="menu">
-										<div class="item" data-value="%">ทั้งหมด</div>
-										<?php
-										for($i=1;$i<13;$i++){
-											echo "<div class=\"item\" data-value=\"{$i}\">{$months[$i-1]}</div>";
-										}
-										?>
+							<div class="fifteen wide field">
+								<div class="five fields">
+									<div class=" field">
+										<div class="month ui floating fluid dropdown labeled search icon button">
+											<i class="calendar alternate outline icon"></i>
+											<input type="hidden" name="month" onchange="applyFilter();">
+											<span class="text">เดือน</span>
+											<div class="menu">
+												<div class="item" data-value="%">ทั้งหมด</div>
+												<?php
+												for($i=1;$i<13;$i++){
+													echo "<div class=\"item\" data-value=\"{$i}\">{$months[$i-1]}</div>";
+												}
+												?>
+											</div>
+										</div>
+									</div>
+									<div class=" field">
+										<div class="year ui floating fluid dropdown labeled search icon button">
+											<i class="calendar outline icon"></i>
+											<input type="hidden" name="year" onchange="applyFilter()">
+											<span class="text">พ.ศ.</span>
+											<div class="menu">
+												<div class="item" data-value="%">ทั้งหมด</div>
+												<?php
+												foreach($years as $year){
+													echo "<div class=\"item\" data-value=\"{$year}\">{$year}</div>";
+												}
+												?>
+											</div>
+										</div>
+									</div>
+									<div class=" field">
+										<div class="occupation ui floating fluid dropdown labeled search icon button">
+											<i class="user md icon"></i>
+											<input type="hidden" name="occupation" onchange="applyFilter()">
+											<span class="text">กลุ่มอาชีพ</span>
+											<div class="menu">
+												<div class="item" data-value="%">ทั้งหมด</div>
+												<?php
+												foreach($occupations as $occupation){
+													echo "<div class=\"item\" data-value=\"{$occupation}\">{$occupation}</div>";
+												}
+												?>
+											</div>
+										</div>
+									</div>
+									<div class=" field">
+										<div class="province ui floating fluid dropdown labeled search icon button">
+											<i class="map marker alternate icon"></i>
+											<input type="hidden" name="province" onchange="applyFilter()">
+											<span class="text">จังหวัด</span>
+											<div class="menu">
+												<div class="item" data-value="%">ทั้งหมด</div>
+												<?php
+												foreach($provinces as $province){
+													echo "<div class=\"item\">".$province."</div>";
+												}
+												?>
+											</div>
+										</div>
+									</div>
+									<div class=" field">
+										<div class="country ui floating fluid dropdown labeled search icon button">
+											<i class="globe alternate icon"></i>
+											<input type="hidden" name="country" onchange="applyFilter()">
+											<span class="text">ประเทศ</span>
+											<div class="menu">
+												<div class="item" data-value="%">ทั้งหมด</div>
+												<?php
+												foreach($countries as $country){
+													echo "<div class=\"item\">".$country."</div>";
+												}
+												?>
+											</div>
+										</div>
+									</div>	
+									<div class=" field">
+										<button class="ui fluid labeled icon button" onclick="resetFilter();"><i class="sync alternate icon"></i>แสดงทั้งหมด</button>
 									</div>
 								</div>
-							</div>
-							<div class="three wide field">
-								<div class="year ui floating fluid dropdown labeled search icon button">
-									<i class="calendar outline icon"></i>
-									<input type="hidden" name="year" onchange="applyFilter()">
-									<span class="text">พ.ศ.</span>
-									<div class="menu">
-										<div class="item" data-value="%">ทั้งหมด</div>
-										<?php
-										foreach($years as $year){
-											echo "<div class=\"item\" data-value=\"{$year}\">{$year}</div>";
-										}
-										?>
-									</div>
-								</div>
-							</div>
-							<div class="three wide field">
-								<div class="occupation ui floating fluid dropdown labeled search icon button">
-									<i class="user md icon"></i>
-									<input type="hidden" name="occupation" onchange="applyFilter()">
-									<span class="text">กลุ่มอาชีพ</span>
-									<div class="menu">
-										<div class="item" data-value="%">ทั้งหมด</div>
-										<?php
-										foreach($occupations as $occupation){
-											echo "<div class=\"item\" data-value=\"{$occupation}\">{$occupation}</div>";
-										}
-										?>
-									</div>
-								</div>
-							</div>
-							<div class="three wide field">
-								<div class="province ui floating fluid dropdown labeled search icon button">
-									<i class="map marker alternate icon"></i>
-									<input type="hidden" name="province" onchange="applyFilter()">
-									<span class="text">จังหวัด</span>
-									<div class="menu">
-										<div class="item" data-value="%">ทั้งหมด</div>
-										<?php
-										foreach($provinces as $province){
-											echo "<div class=\"item\">".$province."</div>";
-										}
-										?>
-									</div>
-								</div>
-							</div>	
-							<div class="three wide field">
-								<button class="ui fluid labeled icon button" onclick="resetFilter();"><i class="sync alternate icon"></i>แสดงทั้งหมด</button>
 							</div>
 						</div>
 					</div>
@@ -202,7 +221,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								<input type="text" name="address" placeholder="หน่วยงาน/ที่อยู่">
 							</div>
 						</div>
-						<div class="two fields">
+						<div class="three fields">
 							<div class="inline field">
 								<div class="ui fluid labeled input">
 									<div class="ui label">อำเภอ</div>
@@ -217,6 +236,19 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 									<div class="menu">';
 										foreach($provinces as $province){
 											echo "<div class=\"item\">".$province."</div>";
+										}
+									echo '
+									</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="country ui fluid floating labeled icon search dropdown button">
+									<i class="globe alternate icon"></i>
+									<input type="hidden" name="country">
+									<span class="text">ประเทศ</span>
+									<div class="menu">';
+										foreach($countries as $country){
+											echo "<div class=\"item\">".$country."</div>";
 										}
 									echo '
 									</div>
@@ -331,7 +363,7 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								<input type="text" name="address" placeholder="หน่วยงาน/ที่อยู่">
 							</div>
 						</div>
-						<div class="two fields">
+						<div class="three fields">
 							<div class="inline field">
 								<div class="ui fluid labeled input">
 									<div class="ui label">อำเภอ</div>
@@ -346,6 +378,19 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 									<div class="menu">';
 										foreach($provinces as $province){
 											echo "<div class=\"item\">".$province."</div>";
+										}
+									echo '
+									</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="country ui fluid floating labeled icon search dropdown button">
+									<i class="globe alternate icon"></i>
+									<input type="hidden" name="country">
+									<span class="text">ประเทศ</span>
+									<div class="menu">';
+										foreach($countries as $country){
+											echo "<div class=\"item\">".$country."</div>";
 										}
 									echo '
 									</div>

@@ -18,6 +18,7 @@ $record->n_people = isset($_POST['n_people']) ? $_POST['n_people'] : "die()";
 $record->address = isset($_POST['address']) ? $_POST['address'] : "address die()";
 $record->district = isset($_POST['district']) ? $_POST['district'] : "district die()";
 $record->province = isset($_POST['province']) ? $_POST['province'] : "die()";
+$record->country = isset($_POST['country']) ? $_POST['country'] : "die()";
 $record->meal_price = isset($_POST['meal_price']) ? $_POST['meal_price'] : "die()";
 $record->meal_quantity = isset($_POST['meal_quantity']) ? $_POST['meal_quantity'] : "die()";
 $record->personal_room = isset($_POST['personal_room']) ? $_POST['personal_room'] : "die()";

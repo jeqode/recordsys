@@ -3,6 +3,11 @@ $(function(){
 	$('.ui.dropdown')
   		.dropdown()
 	;
+	$('.record .province.ui.dropdown')
+  		.dropdown({
+			allowAdditions: true
+		  })
+	;
 	$('.ui.checkbox')
 		.checkbox()
 	;
@@ -48,7 +53,8 @@ function loadReports(filter){
 			'month': filter.month,
 			'year': filter.year,
 			'occupation': filter.occupation,
-			'province': filter.province
+			'province': filter.province,
+			'country': filter.country
 		},
 		success: function(data, textStatus, jQxhr){
 			if(data['data'] === undefined || data['data'].lenght == 0){
@@ -62,7 +68,7 @@ function loadReports(filter){
 						<td>${record['visit_date']}</td>
 						<td>${record['occupation']}</td>
 						<td>${record['n_people']}</td>
-						<td>${record['address']} ${record['district']} ${record['province']}</td>
+						<td>${record['address']} ${record['district']} ${record['province']} ประเทศ${record['country']}</td>
 						<td>${record['meal_price']}</td>
 						<td>${record['meal_quantity']}</td>
 						<td>${record['personal_room']}</td>
@@ -72,7 +78,7 @@ function loadReports(filter){
 						<td>${record['meeting_room']}</td>
 						<td class="middle aligned">
 							<div class ="ui buttons">
-								<div class="ui teal icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
+								<div class="ui icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
 								<div class="ui red icon button" onclick="if(confirm('ยืนยันการลบข้อมูล ?'))deleteRecordByRecordTime('${record['record_time']}');"><i class="trash alternate outline icon"></i></div>
 							</div>
 						</td>
@@ -107,9 +113,10 @@ function applyFilter(){
 	filter.year = $.isNumeric($('.filter [name="year"]').val())? $('.filter [name="year"]').val() - 543 : "%";
 	filter.occupation = $('.filter [name="occupation"]').val() != "" ? $('.filter [name="occupation"]').val() : "%" ;
 	filter.province = $('.filter [name="province"]').val() != "" ? $('.filter [name="province"]').val() : "%" ;
+	filter.country = $('.filter [name="country"]').val() != "" ? $('.filter [name="country"]').val() : "%" ;
 	loadReports(filter);
-	$('a.export.excel.button').attr("href","api/record/export.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province);
-	$('a.print.button').attr("href","api/record/print.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province);
+	$('a.export.excel.button').attr("href","api/record/export.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province+"&country="+filter.country);
+	$('a.print.button').attr("href","api/record/print.php?month="+filter.month+"&year="+filter.year+"&occupation="+filter.occupation+"&province="+filter.province+"&country="+filter.country);
 }
 
 function resetFilter(){
@@ -122,11 +129,13 @@ function addRecordModal(){
 	today = new Date();
 	$('.add.record [name="visit_date"]').val(formatDate(today));
 	$('.add.record [name="doc_number"]').val("");
-	$('.add.record #datetimepicker').calendar("set date", new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+	$('.add.record [name="visit_date"]').val(formatDate(today));
 	$('.add.record .occupation.dropdown').dropdown("restore defaults");
 	$('.add.record [name="address"]').val("");
 	$('.add.record [name="district"]').val("");
+	$('.add.record [name="country"]').val("");
 	$('.add.record .province.dropdown').dropdown("restore defaults");
+	$('.edit.record .country.dropdown').dropdown("set selected", "ไทย");
 	$('.add.record [name="n_people"]').val("");
 	$('.add.record [name="meal_price"]').val("");
 	$('.add.record [name="meal_quantity"]').val("");
@@ -144,6 +153,7 @@ function addRecord(){
 	address = $('.add.record [name="address"]').val();
 	district = $('.add.record [name="district"]').val();
 	province = $('.add.record [name="province"]').val();
+	country = $('.add.record [name="country"]').val();
 	n_people = $('.add.record [name="n_people"]').val();
 	meal_price = $('.add.record [name="meal_price"]').val();
 	meal_quantity = $('.add.record [name="meal_quantity"]').val();
@@ -164,6 +174,7 @@ function addRecord(){
 				'address': address,
 				'district': district,
 				'province': province,
+				'country': country,
 				'meal_price': meal_price,
 				'meal_quantity': meal_quantity,
 				'personal_room': personal_room,
@@ -212,6 +223,7 @@ function readRecordByRecordTime(time){
 			$('.edit.record [name="address"]').val(data['address']);
 			$('.edit.record [name="district"]').val(data['district']);
 			$('.edit.record .province.dropdown').dropdown("set selected", data['province']);
+			$('.edit.record .country.dropdown').dropdown("set selected", data['country']);
 			$('.edit.record [name="n_people"]').val(data['n_people']);
 			$('.edit.record [name="meal_price"]').val(data['meal_price']);
 			$('.edit.record [name="meal_quantity"]').val(data['meal_quantity']);
@@ -254,6 +266,7 @@ function editRecord(time){
 	address = $('.edit.record [name="address"]').val();
 	district = $('.edit.record [name="district"]').val();
 	province = $('.edit.record [name="province"]').val();
+	country = $('.edit.record [name="country"]').val();
 	n_people = $('.edit.record [name="n_people"]').val();
 	meal_price = $('.edit.record [name="meal_price"]').val();
 	meal_quantity = $('.edit.record [name="meal_quantity"]').val();
@@ -275,6 +288,7 @@ function editRecord(time){
 				'address': address,
 				'district': district,
 				'province': province,
+				'country': country,
 				'meal_price': meal_price,
 				'meal_quantity': meal_quantity,
 				'personal_room': personal_room,

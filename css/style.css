@@ -117,3 +117,7 @@ body .grid{
 .not_admin.table tr :nth-child(13){
 	display: none;
 }
+
+table tr td{
+	vertical-align: middle;
+}

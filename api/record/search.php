@@ -13,8 +13,9 @@ $month = isset($_POST['month']) ? $_POST['month'] : "%";
 $year = isset($_POST['year']) ? $_POST['year'] : "%";
 $occupation = isset($_POST['occupation']) ? $_POST['occupation'] : "%";
 $province = isset($_POST['province']) ? $_POST['province'] : "%";
+$country = isset($_POST['country']) ? $_POST['country'] : "%";
 
-$stmt = $record->search($month, $year, $occupation, $province);
+$stmt = $record->search($month, $year, $occupation, $province, $country);
 $num = $stmt->rowCount();
 
 if($num>0){
@@ -33,6 +34,7 @@ if($num>0){
             "address" =>  html_entity_decode($address),
             "district" =>  html_entity_decode($district),
             "province" =>  html_entity_decode($province),
+            "country" =>  html_entity_decode($country),
             "meal_price" =>  $meal_price,
             "meal_quantity" =>  $meal_quantity,
             "personal_room" =>  html_entity_decode($personal_room),

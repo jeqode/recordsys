@@ -62,7 +62,7 @@ $num = $stmt->rowCount();
 							<td align=\"center\" valign=\"middle\">{$row['visit_date']}</td>
 							<td align=\"center\" valign=\"middle\">{$row['occupation']}</td>
 							<td align=\"center\" valign=\"middle\">{$row['n_people']}</td>
-							<td align=\"center\" valign=\"middle\">{$row['address']} อ.{$row['district']} จ.{$row['province']}</td>
+							<td align=\"center\" valign=\"middle\">{$row['address']} {$row['district']} {$row['province']} {$row['country']}</td>
 							<td align=\"center\" valign=\"middle\">{$row['meal_price']}</td>
 							<td align=\"center\" valign=\"middle\">{$row['meal_quantity']}</td>
 							<td align=\"center\" valign=\"middle\">{$row['personal_room']}</td>

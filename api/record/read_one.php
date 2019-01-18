@@ -19,6 +19,7 @@ $record_array = array(
     "address" => $record->address,
     "district" => $record->district,
     "province" => $record->province,
+    "country" => $record->country,
     "n_people" => $record->n_people,
     "meal_price" => $record->meal_price,
     "meal_quantity" => $record->meal_quantity,
