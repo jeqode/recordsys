@@ -34,6 +34,7 @@ $record->contact =  isset($_POST['contact']) && $_POST['contact'] ? "'".$_POST['
 $stmt = $record->new();
 $num = $stmt->rowCount();
 if($num){
+	$record->res['success'] = true;
 	$record->res['message'] = "เพิ่ม {$num} ข้อมูลสำเร็จ";
 }else{
 	$record->res['success'] = false;

@@ -9,8 +9,7 @@ session_start();
 include_once '../config/database.php';
 include_once '../user.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();
 $user = new User($db);
 
 $user->username = (isset($_POST['username']) && $_POST['username'] != "") ? $_POST['username']:die();

@@ -5,18 +5,16 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once '../user.php';
 
-$database = new Database();
-$db = $database->getConnection();
-
+$db = new Database();
 $user = new User($db);
 
 $stmt = $user->readAll();
 $num = $stmt->rowCount();
 
 if($num>0){
-	$user_array = array();
-	$user_array["success"] = true;
-	$user_array["data"] = array();
+	$user->res = array();
+	$user->res['success'] = true;
+	$user->res["data"] = array();
 
 	while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 		extract($row);
@@ -25,12 +23,12 @@ if($num>0){
 			"username" => html_entity_decode($username),
 			"is_admin" => $is_admin
 		);
-		array_push($user_array["data"], $user_item);
+		array_push($user->res["data"], $user_item);
 	}
-	echo json_encode($user_array);
+	
 } else{
-	echo json_encode(
-		array("success" => false, "message" => "No users found.")
-	);
+	$user->res['success'] = false;
+	$user->res['message'] = "ไม่พบข้อมูล";
 }
+echo json_encode($user->res);
 ?>

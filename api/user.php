@@ -7,9 +7,11 @@ class User{
 	public $username;
 	public $auth_hash;
 	public $is_admin;
+	public $res;
 
 	public function __construct($db){
-		$this->conn = $db;
+		$this->res = $db->res;
+		$this->conn = $db->getConnection();
 	}
 
 	function readAll(){
@@ -17,10 +19,11 @@ class User{
 			$query = "SELECT id, username, auth_hash, is_admin FROM {$this->table_name}";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo "Error: " . $e->getMessage();
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 
 	function readOne(){
@@ -34,7 +37,8 @@ class User{
 			$this->auth_hash = $row['auth_hash'];
 			$this->is_admin = $row['is_admin'];
 		} catch (PDOException $e) {
-			echo "Error: " . $e->getMessage();
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
 	}
 	
@@ -44,10 +48,11 @@ class User{
 			$query = "INSERT INTO {$this->table_name} VALUE(NULL, '{$this->username}', '{$this->auth_hash}', {$this->is_admin})";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo "Error: " . $e->getMessage();
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 
 	function editOne(){
@@ -60,10 +65,11 @@ class User{
 			}
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo $sql . "<br>" . $e->getMessage();
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 
 	function delete(){
@@ -71,10 +77,11 @@ class User{
 			$query = "DELETE FROM {$this->table_name} WHERE id={$this->id}";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo $sql . "<br>" . $e->getMessage();
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 }
 ?>

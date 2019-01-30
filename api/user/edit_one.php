@@ -7,8 +7,7 @@ header("Content-Type: application/json");
 include_once '../config/database.php';
 include_once '../user.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();
 $user = new User($db);
 $user->id = isset($_POST['id']) ? $_POST['id'] : die();
 $user->username = isset($_POST['username']) ? $_POST['username'] : die();
@@ -16,5 +15,13 @@ $user->auth_hash = isset($_POST['password']) ? $_POST['password'] : "";
 $user->is_admin = isset($_POST['is_admin']) ? $_POST['is_admin'] : die();
 $stmt = $user->editOne();
 $num = $stmt->rowCount();
-print("{\"message\": \"{$num} รายการแก้ไขสำเร็จ\"}");
+if ($num){
+    $user->res['success'] = true;
+    $user->res['message'] = "{$num} รายการแก้ไขสำเร็จ";
+}else{
+    $user->res['message'] = "แก้ไขข้อมูลไม่สำเร็จ";
+    $user->res['success'] = false;
+}
+echo json_encode($user->res);
+
 ?>

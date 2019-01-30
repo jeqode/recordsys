@@ -7,16 +7,18 @@ header("Content-Type: application/json");
 include_once '../config/database.php';
 include_once '../user.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();
 $user = new User($db);
 $user->id = isset($_POST['id']) ? $_POST['id'] : die();
 $stmt = $user->delete();
 $num = $stmt->rowCount();
 
 if($num){
-    print("{\"message\": \"ลบ {$stmt->rowCount()} ผู้ใช้สำเร็จ\"}");
+    $user->res['success'] = true;
+    $user->res['message'] = "ลบ {$stmt->rowCount()} ผู้ใช้สำเร็จ";
 }else{
-    print("{\"message\": ไม่สามารถลบผู้ใช้ใด้!\"}");
+    $user->res['message'] = "ไม่สามารถลบผู้ใช้ใด้!";
+    $user->res['success'] = false;
 }
+echo json_encode($user->res);
 ?>

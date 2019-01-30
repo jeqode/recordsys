@@ -1,8 +1,8 @@
 body{
 	background: rgb(229,238,193);
-    background: linear-gradient(169deg, rgba(229,238,193,1) 0%, rgba(162,212,171,1) 13%, rgba(62,172,168,1) 41%, rgba(84,122,130,1) 74%, rgba(90,80,80,1) 100%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+	background: linear-gradient(169deg, rgba(229,238,193,1) 0%, rgba(162,212,171,1) 13%, rgba(62,172,168,1) 41%, rgba(84,122,130,1) 74%, rgba(90,80,80,1) 100%);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 
 body .wrapper{

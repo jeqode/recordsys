@@ -134,104 +134,109 @@ function loadReports(filter){
 			'country': filter.country
 		},
 		success: function(data, textStatus, jQxhr){
-			if(data['data'] === undefined || data['data'].length == 0){
-				$('#records').html("<tr><td colspan=\"15\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
-			}else{
-				$('#records').html("");
-				$.each(data['data'], function(index, record) {
-					activities = record['activities'] != null && record['activities'].length > 0 ? record['activities'].join(', ') : "-";
-					rooms = record['rooms'];
-					rowspan_rooms = "";
-					room = Object();
-					if (rooms != null && rooms.length > 0){
-						room_n = rooms.length;
-						room = rooms.shift();
-						rowspan_rooms = room_n > 1 ? ' rowspan="' + room_n + ' " ' : ""; 
-					}else{
-						room['name'] = "-";
-						room['price'] = "-";
-						room['quantity'] = "-";
-					}
-					single_decker_tram = $.isNumeric(record['single_decker_tram']) ? record['single_decker_tram'] : "-";
-					double_decker_tram = $.isNumeric(record['double_decker_tram']) ? record['double_decker_tram'] : "-";
-					meeting_room = record['meeting_room_name'] != null ? record['meeting_room_name'] : "-";
-					meeting_room += record['meeting_room_price'] != null ? " ราคา " + record['meeting_room_price'] + " บาท" : "";
-					contact = record['contact'] != null ? record['contact'] : "-";
-					breakfast = record['meal_breakfast_price'] ? record['meal_breakfast_price'] : "-";
-					lunch = record['meal_lunch_price'] ? record['meal_lunch_price'] : "-";
-					dinner = record['meal_dinner_price'] ? record['meal_dinner_price'] : "-";
-					morning = record['refreshment_morning_price'] ? record['refreshment_morning_price'] : "-";
-					afternoon = record['refreshment_afternoon_price'] ? record['refreshment_afternoon_price'] : "-";
-					evening = record['refreshment_evening_price'] ? record['refreshment_evening_price'] : "-";
-					foods = `
-					<div class='content'>
-						<table class='ui center aligned very basic celled table'>
-							<thead>
-								<tr>
-									<th colspan='3'>อาหารหลัก</th>
-									<th colspan='3'>อาหารว่าง</th>
-								</tr>
-								<tr>
-									<th>เช้า (บาท)</th>
-									<th>กลางวัน (บาท)</th>
-									<th>เย็น (บาท)</th>
-									<th>เช้า (บาท)</th>
-									<th>บ่าย (บาท)</th>
-									<th>ดึก (บาท)</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>${breakfast}</td>
-									<td>${lunch}</td>
-									<td>${dinner}</td>
-									<td>${morning}</td>
-									<td>${afternoon}</td>
-									<td>${evening}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					`;
-					$('#records').append(`
-					<tr>
-						<td ${rowspan_rooms}>${record['doc_number']}</td>
-						<td ${rowspan_rooms}>${record['visit_date']}</td>
-						<td ${rowspan_rooms}>${record['occupation']}</td>
-						<td ${rowspan_rooms}>${record['n_people']}</td>
-						<td ${rowspan_rooms}>${record['address']} ${record['district']} ${record['province']} ประเทศ${record['country']}</td>
-						<td ${rowspan_rooms}><a class="got-popup ui label" data-html="${foods}">รายละเอียด</a></td>
-						<td ${rowspan_rooms}>${single_decker_tram}</td>
-						<td ${rowspan_rooms}>${double_decker_tram}</td>
-						<td ${rowspan_rooms}>${meeting_room}</td>
-						<td>${room['name']}</td>
-						<td>${room['price']}</td>
-						<td>${room['quantity']}</td>
-						<td ${rowspan_rooms}>${activities}</td>
-						<td ${rowspan_rooms}>${contact}</td>
-						<td ${rowspan_rooms}class="middle aligned">
-							<div class ="ui buttons">
-								<div class="ui icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
-								<div class="ui red icon button" onclick="if(confirm('ยืนยันการลบข้อมูล ?'))deleteRecordByRecordTime('${record['record_time']}');"><i class="trash alternate outline icon"></i></div>
-							</div>
-						</td>
-					</tr>
-					`);
-
-					if (rooms != null) {
-						while (rooms.length > 0){
+			if (data['success']){
+				if(data['data'] === undefined || data['data'].length == 0){
+					$('#records').html("<tr><td colspan=\"15\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
+				}else{
+					$('#records').html("");
+					$.each(data['data'], function(index, record) {
+						activities = record['activities'] != null && record['activities'].length > 0 ? record['activities'].join(', ') : "-";
+						rooms = record['rooms'];
+						rowspan_rooms = "";
+						room = Object();
+						if (rooms != null && rooms.length > 0){
+							room_n = rooms.length;
 							room = rooms.shift();
-							$('#records').append(`
-							<tr>
-								<td>${room['name']}</td>
-								<td>${room['price']}</td>
-								<td>${room['quantity']}</td>
-							</tr>
-							`);
+							rowspan_rooms = room_n > 1 ? ' rowspan="' + room_n + ' " ' : ""; 
+						}else{
+							room['name'] = "-";
+							room['price'] = "-";
+							room['quantity'] = "-";
 						}
-					}
-				});
-			}  
+						single_decker_tram = $.isNumeric(record['single_decker_tram']) ? record['single_decker_tram'] : "-";
+						double_decker_tram = $.isNumeric(record['double_decker_tram']) ? record['double_decker_tram'] : "-";
+						meeting_room = record['meeting_room_name'] != null ? record['meeting_room_name'] : "-";
+						meeting_room += record['meeting_room_price'] != null ? " ราคา " + record['meeting_room_price'] + " บาท" : "";
+						contact = record['contact'] != null ? record['contact'] : "-";
+						breakfast = record['meal_breakfast_price'] ? record['meal_breakfast_price'] : "-";
+						lunch = record['meal_lunch_price'] ? record['meal_lunch_price'] : "-";
+						dinner = record['meal_dinner_price'] ? record['meal_dinner_price'] : "-";
+						morning = record['refreshment_morning_price'] ? record['refreshment_morning_price'] : "-";
+						afternoon = record['refreshment_afternoon_price'] ? record['refreshment_afternoon_price'] : "-";
+						evening = record['refreshment_evening_price'] ? record['refreshment_evening_price'] : "-";
+						foods = `
+						<div class='content'>
+							<table class='ui center aligned very basic celled table'>
+								<thead>
+									<tr>
+										<th colspan='3'>อาหารหลัก</th>
+										<th colspan='3'>อาหารว่าง</th>
+									</tr>
+									<tr>
+										<th>เช้า (บาท)</th>
+										<th>กลางวัน (บาท)</th>
+										<th>เย็น (บาท)</th>
+										<th>เช้า (บาท)</th>
+										<th>บ่าย (บาท)</th>
+										<th>ดึก (บาท)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>${breakfast}</td>
+										<td>${lunch}</td>
+										<td>${dinner}</td>
+										<td>${morning}</td>
+										<td>${afternoon}</td>
+										<td>${evening}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						`;
+						$('#records').append(`
+						<tr>
+							<td ${rowspan_rooms}>${record['doc_number']}</td>
+							<td ${rowspan_rooms}>${record['visit_date']}</td>
+							<td ${rowspan_rooms}>${record['occupation']}</td>
+							<td ${rowspan_rooms}>${record['n_people']}</td>
+							<td ${rowspan_rooms}>${record['address']} ${record['district']} ${record['province']} ประเทศ${record['country']}</td>
+							<td ${rowspan_rooms}><a class="got-popup ui label" data-html="${foods}">รายละเอียด</a></td>
+							<td ${rowspan_rooms}>${single_decker_tram}</td>
+							<td ${rowspan_rooms}>${double_decker_tram}</td>
+							<td ${rowspan_rooms}>${meeting_room}</td>
+							<td>${room['name']}</td>
+							<td>${room['price']}</td>
+							<td>${room['quantity']}</td>
+							<td ${rowspan_rooms}>${activities}</td>
+							<td ${rowspan_rooms}>${contact}</td>
+							<td ${rowspan_rooms}class="middle aligned">
+								<div class ="ui buttons">
+									<div class="ui icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
+									<div class="ui red icon button" onclick="if(confirm('ยืนยันการลบข้อมูล ?'))deleteRecordByRecordTime('${record['record_time']}');"><i class="trash alternate outline icon"></i></div>
+								</div>
+							</td>
+						</tr>
+						`);
+
+						if (rooms != null) {
+							while (rooms.length > 0){
+								room = rooms.shift();
+								$('#records').append(`
+								<tr>
+									<td>${room['name']}</td>
+									<td>${room['price']}</td>
+									<td>${room['quantity']}</td>
+								</tr>
+								`);
+							}
+						}
+					});
+				}  
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 			$('.got-popup').popup(); 
 		},
 		error: function(jqXHR, exception) {
@@ -378,9 +383,13 @@ function addRecord(){
 			'contact': contact
 		},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data);
-			$('.add.record.modal').modal("hide");
-			applyFilter();
+			if (data['success']){
+				$('.add.record.modal').modal("hide");
+				applyFilter();
+			}else{
+				console.log(data);
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -411,8 +420,13 @@ function readRecordByRecordTime(time){
 			'record_time': time
 		},
 		success: function(data, textStatus, jQxhr){
-			$('.edit.record').attr("data-json", JSON.stringify(data['data']));
-			editRecordModal();
+			if (data['success']){
+				$('.edit.record').attr("data-json", JSON.stringify(data['data']));
+				editRecordModal();
+			}else{
+				console.log(data);
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -490,8 +504,6 @@ function editRecordModal(){
 	$('.ui.edit.record.modal').modal('show');
 }
 
-
-
 function editRecord(time){
 	doc_number = $('.edit.record [name="doc_number"]').val();
 	visit_date = $('.edit.record [name="visit_date"]').val();
@@ -558,9 +570,13 @@ function editRecord(time){
 			'contact': contact
 		},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data);
-			$('.edit.record.modal').modal("hide");
-			applyFilter();
+			if (data['success']){
+				$('.edit.record.modal').modal("hide");
+				applyFilter();
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 		},
 		error: function(jqXHR, exception) {
 			console.log(exception);
@@ -590,8 +606,12 @@ function deleteRecordByRecordTime(time){
 		type: 'POST',
 		data: { 'record_time': time},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data['message']);
-			applyFilter();
+			if (data['success']){
+				applyFilter();
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -615,9 +635,7 @@ function deleteRecordByRecordTime(time){
 
 function manageUserModal(){
 	$('.ui.manage.user.modal').modal('show');
-	$('.ui.checkbox')
-		.checkbox()
-	;
+	$('.ui.checkbox').checkbox();
 	loadUser();
 }
 
@@ -634,48 +652,53 @@ function loadUser(){
 			$('[data-id="new"] [name="username"]').val("");
 			$('[data-id="new"] [name="password"]').val("");
 			$('[data-id="new"] .is_admin.checkbox').checkbox("uncheck");
-			if(result['data'] === undefined || result['data'].length == 0){
-				$('.user.table tbody').html("<tr><td colspan=\"4\">ไม่พบข้อมูลผู้ใช้</td></tr>");
+			if (result['success']){
+				if (result['data'] === undefined || result['data'].length < 2){
+					$('.user.table tbody').html("<tr><td colspan=\"4\">ไม่พบข้อมูลผู้ใช้</td></tr>");
+				}else{
+					$('.user.table tbody').html("");
+					$.each(result['data'], function(index, user) {
+						if(user['id'] == 0) return;
+						is_mainuser = (user['id'] == 1) ? " disabled" : "";
+						is_admin = Number(user['is_admin']) ? " checked" : "";
+						$('.user.table tbody').append(
+							`<tr data-id="${user['id']}">
+								<td>
+									<div class="field">
+										<div class="ui input">
+											<input type="type" name="username" value="${user['username']}">
+										</div>
+									</div>		
+								</td>
+								<td>
+									<div class="ui icon input">
+										<i class="eye link icon" ></i>
+										<input type="password" name="password" placeholder="เปลี่ยนรหัสผ่าน">
+									</div>
+								</td>
+								<td class="middle aligned">
+									<div class="is_admin ui${is_mainuser} toggle checkbox">
+										<input name="is_admin" type="checkbox" tabindex="0" class="hidden"${is_admin}>
+									</div>
+								</td>
+								<td class="middle aligned">
+									<div class="middle aligned inline field">
+										<div class ="ui fluid buttons">
+										<div class="ui teal icon button" onclick="editUserId(${user['id']});"><i class="save outline icon"></i></div>
+										<div class="ui${is_mainuser} red icon button" onclick="if(confirm('ยืนยันการลบชื่อผู้ใช้ ?'))deleteUserId(${user['id']});"><i class="trash alternate outline icon"></i></div>
+										</div>
+									</div>
+								</td>
+							</tr>`
+						);
+					});
+					$('.ui.checkbox').checkbox();
+					$('.eye.link.icon').on('click', function(){togglePasswordView(this)});
+				}
 			}else{
-				$('.user.table tbody').html("");
-				$.each(result['data'], function(index, user) {
-					if(user['id'] == 0) return;
-					is_mainuser = (user['id'] == 1) ? " disabled" : "";
-					is_admin = Number(user['is_admin']) ? " checked" : "";
-					$('.user.table tbody').append(
-						`<tr data-id="${user['id']}">
-							<td>
-								<div class="field">
-									<div class="ui input">
-										<input type="type" name="username" value="${user['username']}">
-									</div>
-								</div>		
-							</td>
-							<td>
-								<div class="ui icon input">
-									<i class="eye link icon" ></i>
-									<input type="password" name="password" placeholder="เปลี่ยนรหัสผ่าน">
-								</div>
-							</td>
-							<td class="middle aligned">
-								<div class="is_admin ui${is_mainuser} toggle checkbox">
-									<input name="is_admin" type="checkbox" tabindex="0" class="hidden"${is_admin}>
-								</div>
-							</td>
-							<td class="middle aligned">
-								<div class="middle aligned inline field">
-									<div class ="ui fluid buttons">
-									<div class="ui teal icon button" onclick="editUserId(${user['id']});"><i class="save outline icon"></i></div>
-									<div class="ui${is_mainuser} red icon button" onclick="if(confirm('ยืนยันการลบชื่อผู้ใช้ ?'))deleteUserId(${user['id']});"><i class="trash alternate outline icon"></i></div>
-									</div>
-								</div>
-							</td>
-						</tr>`
-					);
-				});
-				$('.ui.checkbox').checkbox();
-				$('.eye.link.icon').on('click', function(){togglePasswordView(this)});
-			}   
+				console.log(result);
+				alert(result['message'] + "\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+			}
 		}
 	});		
 }
@@ -695,8 +718,13 @@ function editUserId(id){
 				'is_admin': is_admin
 			},
 		success: function( data, textStatus, jQxhr ){
-			alert(data['message']);
-			loadUser();
+			if (data['success']){
+				alert(data['message']);
+				loadUser();
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -732,8 +760,12 @@ function newUser(){
 				'is_admin': is_admin
 			},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data['message']);
-			loadUser();
+			if (data['success']){
+				loadUser();
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -762,8 +794,12 @@ function deleteUserId(id){
 		type: 'POST',
 		data: { 'id': id},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data['message']);
-			loadUser();
+			if (data['success']){
+				loadUser();
+			}else{
+				alert(data['message']+"\nตรวจสอบรายละเอียดเพิ่มเติมใน console");
+				console.log(data);
+			}
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {

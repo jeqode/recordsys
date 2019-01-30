@@ -8,7 +8,7 @@ include_once '../record.php';
 $db = new Database();
 $record = new Record($db);
 $record->record_time = isset($_GET['record_time']) ? $_GET['record_time'] : NULL;
-
+$record->res['success'] = false;
 if ($record->record_time){
 	$record->readOne();
 	if(isset($record->visit_date)){
@@ -36,13 +36,12 @@ if ($record->record_time){
 			"activities" => $record->activities,
 			"contact" => $record->contact
 		);
+		$record->res['success'] = true;
 		$record->res['data'] = $record_array;
 	}else{
-		$record->res['success'] = false;
 		$record->res['message'] = "ไม่พบรายการ";
 	}
 }else{
-	$record->res['success'] = false;
 	$record->res['error'] = "กรุณาระบุรายการที่ต้องการค้นหา";
 	$record->res['message'] = "ไม่สามารถค้นข้อมูลได้";
 }

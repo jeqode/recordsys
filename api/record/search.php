@@ -45,6 +45,7 @@ if($num>0){
 			"contact" => $contact
 		);
 		array_push($record->res["data"], $record_item);
+		$record->res['success'] = true;
 		$record->res['message'] = "พบข้อมูลทั้งหมด {$num} รายการ";
 	}
 } else{

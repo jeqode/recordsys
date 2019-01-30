@@ -34,8 +34,10 @@ $record->contact =  isset($_POST['contact']) && $_POST['contact'] ? "'".$_POST['
 $stmt = $record->editOne();
 $num = $stmt->rowCount();
 if($num){
+	$record->res['success'] = true;
 	$record->res['message'] = "แก้ไขข้อมูล {$num} รายการสำเร็จ";
 }else{
+	$record->res['success'] = false;
 	$record->res['message'] = "ไม่มีการแก้ไขข้อมูล";
 }
 echo json_encode($record->res);
