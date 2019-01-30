@@ -30,13 +30,19 @@ if($num>0){
             "district" =>  html_entity_decode($district),
             "province" =>  html_entity_decode($province),
             "country" =>  html_entity_decode($country),
-            "meal_price" =>  $meal_price,
-            "meal_quantity" =>  $meal_quantity,
-            "personal_room" =>  html_entity_decode($personal_room),
-            "personal_room_quantity" =>  $personal_room_quantity,
-            "group_room" =>  html_entity_decode($group_room),
-            "group_room_quantity" =>  $group_room_quantity,
-            "meeting_room" =>  html_entity_decode($meeting_room)
+            "meal_breakfast_price" => $meal_breakfast_price,
+            "meal_lunch_price" => $meal_lunch_price,
+            "meal_dinner_price" => $meal_dinner_price,
+            "refreshment_morning_price" => $refreshment_morning_price,
+            "refreshment_afternoon_price" => $refreshment_afternoon_price,
+            "refreshment_evening_price" => $refreshment_evening_price,
+            "meeting_room_name" => $meeting_room_name,
+            "meeting_room_price" => $meeting_room_price,
+            "single_decker_tram" => $single_decker_tram,
+            "double_decker_tram" => $double_decker_tram,
+            "rooms" => json_decode($rooms),
+            "activities" => json_decode($activities),
+            "contact" => $contact
 		);
 		array_push($record_array["data"], $record_item);
 	}

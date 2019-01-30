@@ -13,6 +13,7 @@
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/semantic.min.js"></script>
+	<script src="js/jquery.tablesort.min.js"></script>
 	<script src="js/script.js"></script>
 </head>
 <?php
@@ -39,116 +40,126 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 			</div>
 		</div>
 		<div class="main section">
-				<div class="ui center aligned top attached header">
+				<div class="ui center aligned top attached segment">
 					<h3 class="ui header">ข้อมูลคณะศึกษาดูงาน</h3>
 					<div class="sub header">ศูนย์ศึกษาการพัฒนาเขาหินซ้อน อันเนื่องมาจากพระราชดำริ</div>
-				</div>
-				<div class="ui center aligned attached segment">
-					<div class="ui filter form">
-						<div class="fields">
-							<div class="one wide field">
-									<div class="filter setting"><i class="filter icon"></i></div>
-							</div>
-							<div class="fifteen wide field">
-								<div class="five fields">
-									<div class=" field">
-										<div class="month ui floating fluid dropdown labeled search icon button">
-											<i class="calendar alternate outline icon"></i>
-											<input type="hidden" name="month" onchange="applyFilter();">
-											<span class="text">เดือน</span>
-											<div class="menu">
-												<div class="item" data-value="%">ทั้งหมด</div>
-												<?php
-												for($i=1;$i<13;$i++){
-													echo "<div class=\"item\" data-value=\"{$i}\">{$months[$i-1]}</div>";
-												}
-												?>
+					<div class="ui basic segment">
+						<div class="ui filter form">
+							<div class="fields">
+								<div class="one wide field">
+										<div class="filter setting"><i class="filter icon"></i></div>
+								</div>
+								<div class="fifteen wide field">
+									<div class="five fields">
+										<div class=" field">
+											<div class="month ui floating fluid dropdown labeled search icon button">
+												<i class="calendar alternate outline icon"></i>
+												<input type="hidden" name="month" onchange="applyFilter();">
+												<span class="text">เดือน</span>
+												<div class="menu">
+													<div class="item" data-value="%">ทั้งหมด</div>
+													<?php
+													for($i=1;$i<13;$i++){
+														echo "<div class=\"item\" data-value=\"{$i}\">{$months[$i-1]}</div>";
+													}
+													?>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class=" field">
-										<div class="year ui floating fluid dropdown labeled search icon button">
-											<i class="calendar outline icon"></i>
-											<input type="hidden" name="year" onchange="applyFilter()">
-											<span class="text">พ.ศ.</span>
-											<div class="menu">
-												<div class="item" data-value="%">ทั้งหมด</div>
-												<?php
-												foreach($years as $year){
-													echo "<div class=\"item\" data-value=\"{$year}\">{$year}</div>";
-												}
-												?>
+										<div class=" field">
+											<div class="year ui floating fluid dropdown labeled search icon button">
+												<i class="calendar outline icon"></i>
+												<input type="hidden" name="year" onchange="applyFilter()">
+												<span class="text">พ.ศ.</span>
+												<div class="menu">
+													<div class="item" data-value="%">ทั้งหมด</div>
+													<?php
+													foreach($years as $year){
+														echo "<div class=\"item\" data-value=\"{$year}\">{$year}</div>";
+													}
+													?>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class=" field">
-										<div class="occupation ui floating fluid dropdown labeled search icon button">
-											<i class="user md icon"></i>
-											<input type="hidden" name="occupation" onchange="applyFilter()">
-											<span class="text">กลุ่มอาชีพ</span>
-											<div class="menu">
-												<div class="item" data-value="%">ทั้งหมด</div>
-												<?php
-												foreach($occupations as $occupation){
-													echo "<div class=\"item\" data-value=\"{$occupation}\">{$occupation}</div>";
-												}
-												?>
+										<div class=" field">
+											<div class="occupation ui floating fluid dropdown labeled search icon button">
+												<i class="user md icon"></i>
+												<input type="hidden" name="occupation" onchange="applyFilter()">
+												<span class="text">กลุ่มอาชีพ</span>
+												<div class="menu">
+													<div class="item" data-value="%">ทั้งหมด</div>
+													<?php
+													foreach($occupations as $occupation){
+														echo "<div class=\"item\" data-value=\"{$occupation}\">{$occupation}</div>";
+													}
+													?>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class=" field">
-										<div class="province ui floating fluid dropdown labeled search icon button">
-											<i class="map marker alternate icon"></i>
-											<input type="hidden" name="province" onchange="applyFilter()">
-											<span class="text">จังหวัด</span>
-											<div class="menu">
-												<div class="item" data-value="%">ทั้งหมด</div>
-												<?php
-												foreach($provinces as $province){
-													echo "<div class=\"item\">".$province."</div>";
-												}
-												?>
+										<div class=" field">
+											<div class="province ui floating fluid dropdown labeled search icon button">
+												<i class="map marker alternate icon"></i>
+												<input type="hidden" name="province" onchange="applyFilter()">
+												<span class="text">จังหวัด</span>
+												<div class="menu">
+													<div class="item" data-value="%">ทั้งหมด</div>
+													<?php
+													foreach($provinces as $province){
+														echo "<div class=\"item\">".$province."</div>";
+													}
+													?>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class=" field">
-										<div class="country ui floating fluid dropdown labeled search icon button">
-											<i class="globe alternate icon"></i>
-											<input type="hidden" name="country" onchange="applyFilter()">
-											<span class="text">ประเทศ</span>
-											<div class="menu">
-												<div class="item" data-value="%">ทั้งหมด</div>
-												<?php
-												foreach($countries as $country){
-													echo "<div class=\"item\">".$country."</div>";
-												}
-												?>
+										<div class=" field">
+											<div class="country ui floating fluid dropdown labeled search icon button">
+												<i class="globe alternate icon"></i>
+												<input type="hidden" name="country" onchange="applyFilter()">
+												<span class="text">ประเทศ</span>
+												<div class="menu">
+													<div class="item" data-value="%">ทั้งหมด</div>
+													<?php
+													foreach($countries as $country){
+														echo "<div class=\"item\">".$country."</div>";
+													}
+													?>
+												</div>
 											</div>
+										</div>	
+										<div class=" field">
+											<button class="ui fluid labeled icon button" onclick="resetFilter();"><i class="sync alternate icon"></i>แสดงทั้งหมด</button>
 										</div>
-									</div>	
-									<div class=" field">
-										<button class="ui fluid labeled icon button" onclick="resetFilter();"><i class="sync alternate icon"></i>แสดงทั้งหมด</button>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<table class="<?php echo ($_SESSION['is_admin'])? "":"not_admin "; ?>ui center aligned celled striped table">
+					
+				</div>
+		
+				<div class="ui center aligned attached segment">
+					<table class="<?php echo ($_SESSION['is_admin'])? "":"not_admin "; ?>record ui middle aligned center aligned small celled structured table">
 						<thead>
 							<tr>
-								<th>หมายเลข</th>
-								<th>วันที่</th>
-								<th>กลุ่มอาชีพ</th>
-								<th>จำนวน (คน)</th>
-								<th>หน่วยงาน / ที่อยู่</th>
-								<th>ราคาอาหาร (บาท)</th>
-								<th>จำนวน (คน)</th>
-								<th>ที่พักรายบุคคล</th>
-								<th>จำนวน (ห้อง)</th>
-								<th>ที่พักกลุ่ม</th>
-								<th>จำนวน (ห้อง)</th>
-								<th>ห้องประชุม</th>
-								<th>แก้ไข/ลบ</th>
+								<th rowspan="2">หมายเลข</th>
+								<th rowspan="2" class="default-sort">วันที่</th>
+								<th rowspan="2">กลุ่มอาชีพ</th>
+								<th rowspan="2">จำนวน (คน)</th>
+								<th rowspan="2">หน่วยงาน / ที่อยู่</th>
+								<th rowspan="2">ราคาอาหาร</th>
+								<th colspan="2">รถรางดูงาน</th>
+								<th rowspan="2">ห้องประชุม</th>
+								<th colspan="3">ห้องพัก</th>
+								<th rowspan="2">กิจกรรม</th>
+								<th rowspan="2">หมายเลขติดต่อ</th>
+								<th rowspan="2">แก้ไข/ลบ</th>
+							</tr>
+							<tr>
+								<th>ชั้นเดียว</th>
+								<th>สองเดียว</th>
+								<th>หน่วยงาน</th>
+								<th>ราคา</th>
+								<th>จำนวน</th>
 							</tr>
 						</thead>
 						<tbody id="records">
@@ -255,59 +266,200 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								</div>
 							</div>
 						</div>
-						<div class="two fields">
+						<div class="three fields">
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="meal_price" class="ui label">ราคาอาหารมื้อหลัก</label>
-									<input type="text" name="meal_price" placeholder="ราคาอาหาร">
+									<label for="meal_breakfast_price" class="ui label">ราคาอาหาร เช้า</label>
+									<input type="text" name="meal_breakfast_price" placeholder="ราคาอาหารเช้า">
 									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="meal_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="meal_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ที่</div>
+									<label for="meal_lunch_price" class="ui label">กลางวัน</label>
+									<input type="text" name="meal_lunch_price" placeholder="ราคาอาหารกลางวัน">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="meal_dinner_price" class="ui label">เย็น</label>
+									<input type="text" name="meal_dinner_price" placeholder="ราคาอาหารเย็น">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+						</div>
+						<div class="three fields">
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_morning_price" class="ui label">ราคาอาหารว่าง เช้า</label>
+									<input type="text" name="refreshment_morning_price" placeholder="ราคาอาหารว่างเช้า">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_afternoon_price" class="ui label">บ่าย</label>
+									<input type="text" name="refreshment_afternoon_price" placeholder="ราคาอาหารว่างบ่าย">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_evening_price" class="ui label">ดึก</label>
+									<input type="text" name="refreshment_evening_price" placeholder="ราคาอาหารว่างดึก">
+									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid labeled input">
-									<div class="ui label">ห้องพักรายบุคคล</div>
-									<input type="text" name="personal_room" placeholder="ห้องพักรายบุคคล">
+								<div class="ui fluid right labeled input">
+									<label for="single_decker_tram" class="ui label">จองรถรางดูงาน ชั้นเดียว</label>
+									<input type="text" name="single_decker_tram" placeholder="จำนวนรถ">
+									<div class="ui basic label">คัน</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="personal_room_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="personal_room_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ห้อง</div>
+									<label for="double_decker_tram" class="ui label">สองชั้น</label>
+									<input type="text" name="double_decker_tram" placeholder="จำนวนรถ">
+									<div class="ui basic label">คัน</div>
+								</div>
+							</div>
+						</div>
+						<div class="rooms list">
+							<div class="ui three fields room">
+								<div class="inline field">
+									<div class="room_name ui fluid floating labeled icon search dropdown button">
+										<i class="home icon"></i>
+										<input type="hidden" name="room_name">
+										<span class="text">ห้องพัก</span>
+										<div class="menu">
+											<div class="item" data-value="">เลือกห้องพัก</div>';
+											foreach($rooms as $room){
+												echo "<div class=\"item\">".$room."</div>";
+											}
+										echo '
+										</div>
+									</div>
+								</div>
+								<div class="inline field">
+									<div class="ui fluid right labeled input">
+										<label for="room_price" class="ui label">ราคา</label>
+										<input type="text" name="room_price" placeholder="ราคา">
+										<div class="ui dropdown label">
+											<div class="text">บาท/คน</div>
+											<i class="dropdown icon"></i>
+											<input type="hidden" name="room_price_tag" value="บาท/คน" onchange="updateRoomUnit(this);">
+											<div class="menu">
+												<div class="item">บาท/คน</div>
+												<div class="item">บาท/หลัง</div>
+												<div class="item">บาท/เต้นท์</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="inline field">
+									<div class="ui fluid right labeled input">
+										<label for="room_quantity" class="ui label">จำนวน</label>
+										<input type="text" name="room_quantity" placeholder="จำนวน">
+										<div class="ui basic label">คน</div>
+									</div>
+								</div>
+							</div>
+							<div class="ui dimmable fields room">
+								<div class="ui inverted dimmer">
+									<div class="content">
+											<div class="ui compact basic button" onclick="addRoom(\'add\');">เพิ่มห้องพัก</div>
+									</div>
+								</div>
+								<div class="disabled five wide field">
+									<div class="room_name ui fluid floating labeled icon search dropdown button">
+										<i class="home alternate icon"></i>
+										<input type="hidden" name="room_name" value="">
+										<span class="text">ห้องพัก</span>
+										<div class="menu">
+											<div class="item" data-value="">เลือกห้องพัก</div>;';
+											foreach($rooms as $room){
+												echo "<div class=\"item\">".$room."</div>";
+											}
+										echo '
+										</div>
+									</div>
+								</div>
+								<div class="disabled five wide field">
+									<div class="ui fluid right labeled input">
+										<label for="room_price" class="ui label">ราคา</label>
+										<input type="text" name="room_price" placeholder="ราคา">
+										<div class="ui dropdown label">
+											<div class="text">บาท/คน</div>
+											<i class="dropdown icon"></i>
+											<input type="hidden" name="room_price_tag" value="บาท/คน" onchange="updateRoomUnit(this);">
+											<div class="menu">
+												<div class="item">บาท/คน</div>
+												<div class="item">บาท/หลัง</div>
+												<div class="item">บาท/เต้นท์</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="disabled four wide field">
+									<div class="ui fluid right labeled input">
+										<label for="room_quantity" class="ui label">จำนวน</label>
+										<input type="text" name="room_quantity" placeholder="จำนวน">
+										<div class="ui basic label">คน</div>
+									</div>
+								</div>
+								<div class="two wide field">
+									<div class="ui fluid basic button" onclick="removeRoom(this);">ลบ</div>
 								</div>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid labeled input">
-									<div class="ui label">ห้องพักกลุ่ม</div>
-									<input type="text" name="group_room" placeholder="ห้องพักกลุ่ม">
+								<div class="meeting_room_name ui fluid floating labeled icon search dropdown button">
+									<i class="users icon"></i>
+									<input type="hidden" name="meeting_room_name">
+									<span class="text">ห้องประชุม</span>
+									<div class="menu">
+										<div class="item" data-value="">-</div>';
+										foreach($meeting_rooms as $meeting_room){
+											echo "<div class=\"item\">".$meeting_room."</div>";
+										}
+									echo '
+									</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="group_room_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="group_room_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ห้อง</div>
+									<label for="meeting_room_price" class="ui label">ราคา</label>
+									<input type="text" name="meeting_room_price" placeholder="ราคา">
+									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 						</div>
-						<div class="ui field">
+						<div class="field">
+							<div class="activities ui search multiple selection dropdown">
+								<input name="activities" type="hidden">
+								<i class="dropdown icon"></i>
+								<div class="default text">กิจกรรม</div>
+								<div class="menu">';
+									foreach($activities as $activity){
+										echo "<div class=\"item\">".$activity."</div>";
+									}
+								echo '
+								</div>
+					  		</div>	
+						</div>
+						<div class="field">
 							<div class="ui fluid labeled input">
-								<div class="ui label">ห้องประชุม</div>
-								<input type="text" name="meeting_room" placeholder="ห้องประชุม">
+								<div class="ui label">หมายเลขติดต่อ</div>
+								<input type="text" name="contact" placeholder="หมายเลขติดต่อ">
 							</div>
 						</div>
 					</form>
+					<div class="ui hidden divider"></div>
 				</div>
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
@@ -397,63 +549,204 @@ if (isset($_SESSION['user']) && $_SESSION['user'] != "") {
 								</div>
 							</div>
 						</div>
-						<div class="two fields">
+						<div class="three fields">
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="meal_price" class="ui label">ราคาอาหารมื้อหลัก</label>
-									<input type="text" name="meal_price" placeholder="ราคาอาหาร">
+									<label for="meal_breakfast_price" class="ui label">ราคาอาหาร เช้า</label>
+									<input type="text" name="meal_breakfast_price" placeholder="ราคาอาหารเช้า">
 									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="meal_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="meal_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ที่</div>
+									<label for="meal_lunch_price" class="ui label">กลางวัน</label>
+									<input type="text" name="meal_lunch_price" placeholder="ราคาอาหารกลางวัน">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="meal_dinner_price" class="ui label">เย็น</label>
+									<input type="text" name="meal_dinner_price" placeholder="ราคาอาหารเย็น">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+						</div>
+						<div class="three fields">
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_morning_price" class="ui label">ราคาอาหารว่าง เช้า</label>
+									<input type="text" name="refreshment_morning_price" placeholder="ราคาอาหารว่างเช้า">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_afternoon_price" class="ui label">บ่าย</label>
+									<input type="text" name="refreshment_afternoon_price" placeholder="ราคาอาหารว่างบ่าย">
+									<div class="ui basic label">บาท</div>
+								</div>
+							</div>
+							<div class="inline field">
+								<div class="ui fluid right labeled input">
+									<label for="refreshment_evening_price" class="ui label">ดึก</label>
+									<input type="text" name="refreshment_evening_price" placeholder="ราคาอาหารว่างดึก">
+									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid labeled input">
-									<div class="ui label">ห้องพักรายบุคคล</div>
-									<input type="text" name="personal_room" placeholder="ห้องพักรายบุคคล">
+								<div class="ui fluid right labeled input">
+									<label for="single_decker_tram" class="ui label">จองรถรางดูงาน ชั้นเดียว</label>
+									<input type="text" name="single_decker_tram" placeholder="จำนวนรถ">
+									<div class="ui basic label">คัน</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="personal_room_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="personal_room_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ห้อง</div>
+									<label for="double_decker_tram" class="ui label">สองชั้น</label>
+									<input type="text" name="double_decker_tram" placeholder="จำนวนรถ">
+									<div class="ui basic label">คัน</div>
+								</div>
+							</div>
+						</div>
+						<div class="rooms list">
+							<div class="ui three fields room">
+								<div class="inline field">
+									<div class="room_name ui fluid floating labeled icon search dropdown button">
+										<i class="home icon"></i>
+										<input type="hidden" name="room_name">
+										<span class="text">ห้องพัก</span>
+										<div class="menu">
+											<div class="item" data-value="">เลือกห้องพัก</div>';
+											foreach($rooms as $room){
+												echo "<div class=\"item\">".$room."</div>";
+											}
+										echo '
+										</div>
+									</div>
+								</div>
+								<div class="inline field">
+									<div class="ui fluid right labeled input">
+										<label for="room_price" class="ui label">ราคา</label>
+										<input type="text" name="room_price" placeholder="ราคา">
+										<div class="room_price_tag ui dropdown label">
+											<div class="text">บาท/คน</div>
+											<i class="dropdown icon"></i>
+											<input type="hidden" name="room_price_tag" value="บาท/คน" onchange="updateRoomUnit(this);">
+											<div class="menu">
+												<div class="item">บาท/คน</div>
+												<div class="item">บาท/หลัง</div>
+												<div class="item">บาท/เต้นท์</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="inline field">
+									<div class="ui fluid right labeled input">
+										<label for="room_quantity" class="ui label">จำนวน</label>
+										<input type="text" name="room_quantity" placeholder="จำนวน">
+										<div class="ui basic label">คน</div>
+									</div>
+								</div>
+							</div>
+							<div class="ui dimmable fields room">
+								<div class="ui inverted dimmer">
+									<div class="content">
+											<div class="ui compact basic button" onclick="addRoom(\'edit\');">เพิ่มห้องพัก</div>
+									</div>
+								</div>
+								<div class="disabled five wide field">
+									<div class="room_name ui fluid floating labeled icon search dropdown button">
+										<i class="home alternate icon"></i>
+										<input type="hidden" name="room_name" value="">
+										<span class="text">ห้องพัก</span>
+										<div class="menu">
+											<div class="item" data-value="">เลือกห้องพัก</div>;';
+											foreach($rooms as $room){
+												echo "<div class=\"item\">".$room."</div>";
+											}
+										echo '
+										</div>
+									</div>
+								</div>
+								<div class="disabled five wide field">
+									<div class="ui fluid right labeled input">
+										<label for="room_price" class="ui label">ราคา</label>
+										<input type="text" name="room_price" placeholder="ราคา">
+										<div class="room_price_tag ui dropdown label">
+											<div class="text">บาท/คน</div>
+											<i class="dropdown icon"></i>
+											<input type="hidden" name="room_price_tag" value="บาท/คน" onchange="updateRoomUnit(this);">
+											<div class="menu">
+												<div class="item">บาท/คน</div>
+												<div class="item">บาท/หลัง</div>
+												<div class="item">บาท/เต้นท์</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="disabled four wide field">
+									<div class="ui fluid right labeled input">
+										<label for="room_quantity" class="ui label">จำนวน</label>
+										<input type="text" name="room_quantity" placeholder="จำนวน">
+										<div class="ui basic label">คน</div>
+									</div>
+								</div>
+								<div class="two wide field">
+									<div class="ui fluid basic button" onclick="removeRoom(this);">ลบ</div>
 								</div>
 							</div>
 						</div>
 						<div class="two fields">
 							<div class="inline field">
-								<div class="ui fluid labeled input">
-									<div class="ui label">ห้องพักกลุ่ม</div>
-									<input type="text" name="group_room" placeholder="ห้องพักกลุ่ม">
+								<div class="meeting_room_name ui fluid floating labeled icon search dropdown button">
+									<i class="users icon"></i>
+									<input type="hidden" name="meeting_room_name">
+									<span class="text">ห้องประชุม</span>
+									<div class="menu">
+										<div class="item" data-value="">-</div>';
+										foreach($meeting_rooms as $meeting_room){
+											echo "<div class=\"item\">".$meeting_room."</div>";
+										}
+									echo '
+									</div>
 								</div>
 							</div>
 							<div class="inline field">
 								<div class="ui fluid right labeled input">
-									<label for="group_room_quantity" class="ui label">จำนวน</label>
-									<input type="text" name="group_room_quantity" placeholder="จำนวน">
-									<div class="ui basic label">ห้อง</div>
+									<label for="meeting_room_price" class="ui label">ราคา</label>
+									<input type="text" name="meeting_room_price" placeholder="ราคา">
+									<div class="ui basic label">บาท</div>
 								</div>
 							</div>
 						</div>
-						<div class="ui field">
+						<div class="field">
+							<div class="activities ui search multiple selection dropdown">
+								<input name="activities" type="hidden">
+								<i class="dropdown icon"></i>
+								<div class="default text">กิจกรรม</div>
+								<div class="menu">';
+									foreach($activities as $activity){
+										echo "<div class=\"item\">".$activity."</div>";
+									}
+								echo '
+								</div>
+					  		</div>	
+						</div>
+						<div class="field">
 							<div class="ui fluid labeled input">
-								<div class="ui label">ห้องประชุม</div>
-								<input type="text" name="meeting_room" placeholder="ห้องประชุม">
+								<div class="ui label">หมายเลขติดต่อ</div>
+								<input type="text" name="contact" placeholder="หมายเลขติดต่อ">
 							</div>
 						</div>
 					</form>
+					<div class="ui hidden divider"></div>
 				</div>
 				<div class="actions">
 					<div class="ui cancel button">ยกเลิก</div>
-					<div class="ui teal button" onclick="editRecord();">บันทึก</div>
+					<div class="ui teal button" onclick="addRecord();">บันทึก</div>
 				</div>
 			</div>
 			';

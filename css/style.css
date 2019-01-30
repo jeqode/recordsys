@@ -103,10 +103,11 @@ body .grid{
 }
 
 .main.section .top.attached.segment{
-	height: 80px;;
+	height: 160px;;
 }
-.main.section .attached.segment{
-	height: calc(100% - 132px);
+.main.section .attached.segment:nth-child(2){
+	height: calc(100% - 220px);
+	overflow-x: scroll;
 	overflow-y: scroll;
 }
 .main.section .bottom.attached{
@@ -114,10 +115,26 @@ body .grid{
 	overflow: hidden;
 }
 
-.not_admin.table tr :nth-child(13){
+.not_admin.table tbody tr :nth-child(15),.not_admin.table thead tr :nth-child(12){
 	display: none;
 }
 
-table tr td{
-	vertical-align: middle;
+td, th{
+	vertical-align: middle !important;
+}
+
+th.sorted:after{
+	font-family: Icons !important;
+}
+
+th.sorted.ascending:after {
+	content: "  \f0d8";
+}
+
+th.sorted.descending:after {
+	content: " \f0d7";
+}
+
+.rooms.list .ui.dimmer{
+	z-index: 10;
 }

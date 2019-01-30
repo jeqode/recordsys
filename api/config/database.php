@@ -6,6 +6,7 @@ class Database{
     private $username = "root";
     private $password = "daffodil";
     public $conn;
+    public $res = array();
  
     public function getConnection(){
  
@@ -13,9 +14,10 @@ class Database{
  
         try{
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->exec("set names utf8");
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->exec("set names utf8mb4");
         }catch(PDOException $exception){
-            echo "Connection error: " . $exception->getMessage();
+            $res['error'] = $exception->getMessage();
         }
  
         return $this->conn;

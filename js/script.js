@@ -32,6 +32,83 @@ function formatDate(date) {
 	return [year, month, day].join('-');
 }
 
+function updateRoomUnit(tag){
+	parent = tag.parentElement.parentElement.parentElement.parentElement;
+	$(parent.querySelector('[name="room_quantity"] + .label')).html($(parent.querySelector('[name="room_price_tag"]')).val().split('/')[1]);
+}
+
+function addRoom(modal, name="",price="", price_tag="บาท/คน", quantity=""){
+	$('.disabled.field input, .disabled.field .button').attr("tabindex","0");
+	$('.disabled.field').removeClass("disabled ");
+	disabled = name.length ? "disabled" : "";
+	$.ajax({
+		type: 'GET',
+		url: './api/config/variables.php?var=rooms',
+		dataType: 'JSON',
+		success: function(data){
+			room_html = `
+				<div class="ui dimmable fields room">
+					<div class="ui inverted dimmer">
+						<div class="content">
+							<div class="ui compact basic button" onclick="addRoom('${modal}');">เพิ่มห้องพัก</div>
+						</div>
+					</div>
+					<div class="${disabled} five wide field">
+						<div class="occupation ui fluid floating labeled icon search dropdown button">
+							<i class="home alternate icon"></i>
+							<input type="hidden" name="room_name" value="${name}">
+							<span class="text">ห้องพัก</span>
+							<div class="menu">
+								<div class="item" data-value="">เลือกห้องพัก</div>`;
+			rooms = data;
+			for (var i = 0; i < rooms.length; i++){
+				room_html += `<div class="item">${rooms[i]}</div>\n`;
+			}
+			room_html += `
+						</div>
+					</div>
+				</div>
+				<div class="${disabled} five wide field">
+					<div class="ui fluid right labeled input">
+						<label for="room_price" class="ui label">ราคา</label>
+						<input type="text" name="room_price" placeholder="ราคา" value="${price}">
+						<div class="ui dropdown label">
+							<div class="text">บาท/คน</div>
+							<i class="dropdown icon"></i>
+							<input type="hidden" name="room_price_tag" value="${price_tag}" onchange="updateRoomUnit(this);">
+							<div class="menu">
+								<div class="item">บาท/คน</div>
+								<div class="item">บาท/หลัง</div>
+								<div class="item">บาท/เต้นท์</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="${disabled} four wide field">
+					<div class="ui fluid right labeled input">
+						<label for="room_quantity" class="ui label">จำนวน</label>
+						<input type="text" name="room_quantity" placeholder="จำนวน" value="${quantity}">
+						<div class="ui basic label">คน</div>
+					</div>
+				</div>
+				<div class="${disabled} two wide field">
+					<div class="ui fluid basic button" onclick="removeRoom(this);">ลบ</div>
+				</div>
+				</div>`;
+			$('.'+modal+'.record .rooms.list').append(room_html);
+			$('.dropdown').dropdown();
+			$('.disabled.field input, .disabled.field .button').attr("tabindex","-1");
+			$('.dimmable.room .dimmer').dimmer('hide');
+			$('.dimmable.room:last-child .dimmer').dimmer({closable:false}).dimmer('show');
+		}
+	})
+}
+
+function removeRoom(button){
+	room = button.parentElement.parentElement;
+	room.remove();
+}
+
 function logout(){
 	$.ajax({
 		type: "POST",
@@ -57,26 +134,82 @@ function loadReports(filter){
 			'country': filter.country
 		},
 		success: function(data, textStatus, jQxhr){
-			if(data['data'] === undefined || data['data'].lenght == 0){
-				$('#records').html("<tr><td colspan=\"12\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
+			if(data['data'] === undefined || data['data'].length == 0){
+				$('#records').html("<tr><td colspan=\"15\" class=\"ui center aligned item\">ไม่พบข้อมูล</td></tr>");
 			}else{
 				$('#records').html("");
 				$.each(data['data'], function(index, record) {
+					activities = record['activities'] != null && record['activities'].length > 0 ? record['activities'].join(', ') : "-";
+					rooms = record['rooms'];
+					rowspan_rooms = "";
+					room = Object();
+					if (rooms != null && rooms.length > 0){
+						room_n = rooms.length;
+						room = rooms.shift();
+						rowspan_rooms = room_n > 1 ? ' rowspan="' + room_n + ' " ' : ""; 
+					}else{
+						room['name'] = "-";
+						room['price'] = "-";
+						room['quantity'] = "-";
+					}
+					single_decker_tram = $.isNumeric(record['single_decker_tram']) ? record['single_decker_tram'] : "-";
+					double_decker_tram = $.isNumeric(record['double_decker_tram']) ? record['double_decker_tram'] : "-";
+					meeting_room = record['meeting_room_name'] != null ? record['meeting_room_name'] : "-";
+					meeting_room += record['meeting_room_price'] != null ? " ราคา " + record['meeting_room_price'] + " บาท" : "";
+					contact = record['contact'] != null ? record['contact'] : "-";
+					breakfast = record['meal_breakfast_price'] ? record['meal_breakfast_price'] : "-";
+					lunch = record['meal_lunch_price'] ? record['meal_lunch_price'] : "-";
+					dinner = record['meal_dinner_price'] ? record['meal_dinner_price'] : "-";
+					morning = record['refreshment_morning_price'] ? record['refreshment_morning_price'] : "-";
+					afternoon = record['refreshment_afternoon_price'] ? record['refreshment_afternoon_price'] : "-";
+					evening = record['refreshment_evening_price'] ? record['refreshment_evening_price'] : "-";
+					foods = `
+					<div class='content'>
+						<table class='ui center aligned very basic celled table'>
+							<thead>
+								<tr>
+									<th colspan='3'>อาหารหลัก</th>
+									<th colspan='3'>อาหารว่าง</th>
+								</tr>
+								<tr>
+									<th>เช้า (บาท)</th>
+									<th>กลางวัน (บาท)</th>
+									<th>เย็น (บาท)</th>
+									<th>เช้า (บาท)</th>
+									<th>บ่าย (บาท)</th>
+									<th>ดึก (บาท)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>${breakfast}</td>
+									<td>${lunch}</td>
+									<td>${dinner}</td>
+									<td>${morning}</td>
+									<td>${afternoon}</td>
+									<td>${evening}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					`;
 					$('#records').append(`
 					<tr>
-						<td>${record['doc_number']}</td>
-						<td>${record['visit_date']}</td>
-						<td>${record['occupation']}</td>
-						<td>${record['n_people']}</td>
-						<td>${record['address']} ${record['district']} ${record['province']} ประเทศ${record['country']}</td>
-						<td>${record['meal_price']}</td>
-						<td>${record['meal_quantity']}</td>
-						<td>${record['personal_room']}</td>
-						<td>${record['personal_room_quantity']}</td>
-						<td>${record['group_room']}</td>
-						<td>${record['group_room_quantity']}</td>
-						<td>${record['meeting_room']}</td>
-						<td class="middle aligned">
+						<td ${rowspan_rooms}>${record['doc_number']}</td>
+						<td ${rowspan_rooms}>${record['visit_date']}</td>
+						<td ${rowspan_rooms}>${record['occupation']}</td>
+						<td ${rowspan_rooms}>${record['n_people']}</td>
+						<td ${rowspan_rooms}>${record['address']} ${record['district']} ${record['province']} ประเทศ${record['country']}</td>
+						<td ${rowspan_rooms}><a class="got-popup ui label" data-html="${foods}">รายละเอียด</a></td>
+						<td ${rowspan_rooms}>${single_decker_tram}</td>
+						<td ${rowspan_rooms}>${double_decker_tram}</td>
+						<td ${rowspan_rooms}>${meeting_room}</td>
+						<td>${room['name']}</td>
+						<td>${room['price']}</td>
+						<td>${room['quantity']}</td>
+						<td ${rowspan_rooms}>${activities}</td>
+						<td ${rowspan_rooms}>${contact}</td>
+						<td ${rowspan_rooms}class="middle aligned">
 							<div class ="ui buttons">
 								<div class="ui icon button" onclick="readRecordByRecordTime('${record['record_time']}');"><i class="edit outline icon"></i></div>
 								<div class="ui red icon button" onclick="if(confirm('ยืนยันการลบข้อมูล ?'))deleteRecordByRecordTime('${record['record_time']}');"><i class="trash alternate outline icon"></i></div>
@@ -84,8 +217,22 @@ function loadReports(filter){
 						</td>
 					</tr>
 					`);
+
+					if (rooms != null) {
+						while (rooms.length > 0){
+							room = rooms.shift();
+							$('#records').append(`
+							<tr>
+								<td>${room['name']}</td>
+								<td>${room['price']}</td>
+								<td>${room['quantity']}</td>
+							</tr>
+							`);
+						}
+					}
 				});
-			}   
+			}  
+			$('.got-popup').popup(); 
 		},
 		error: function(jqXHR, exception) {
 			if (jqXHR.status === 0) {
@@ -126,6 +273,7 @@ function resetFilter(){
 
 function addRecordModal(){
 	$('.ui.add.record.modal').modal('show');
+	$('.dropdown').dropdown({clearable: true, allowAdditions: true});
 	today = new Date();
 	$('.add.record [name="visit_date"]').val(formatDate(today));
 	$('.add.record [name="doc_number"]').val("");
@@ -133,17 +281,36 @@ function addRecordModal(){
 	$('.add.record .occupation.dropdown').dropdown("restore defaults");
 	$('.add.record [name="address"]').val("");
 	$('.add.record [name="district"]').val("");
-	$('.add.record [name="country"]').val("");
-	$('.add.record .province.dropdown').dropdown("restore defaults");
-	$('.edit.record .country.dropdown').dropdown("set selected", "ไทย");
+	$('.add.record .province.dropdown').dropdown("clear");
+	$('.add.record .province.dropdown').dropdown("set text", "จังหวัด");
+	$('.add.record .country.dropdown').dropdown("set selected", "ไทย");
 	$('.add.record [name="n_people"]').val("");
-	$('.add.record [name="meal_price"]').val("");
-	$('.add.record [name="meal_quantity"]').val("");
-	$('.add.record [name="personal_room"]').val("");
-	$('.add.record [name="personal_room_quantity"]').val("");
-	$('.add.record [name="group_room"]').val("");
-	$('.add.record [name="group_room_quantity"]').val("");
-	$('.add.record [name="meeting_room"]').val("");
+	$('.add.record [name="meal_breakfast_price"]').val("");
+	$('.add.record [name="meal_lunch_price"]').val("");
+	$('.add.record [name="meal_dinner_price"]').val("");
+	$('.add.record [name="refreshment_morning_price"]').val("");
+	$('.add.record [name="refreshment_afternoon_price"]').val("");
+	$('.add.record [name="refreshment_evening_price"]').val("");
+	$('.add.record [name="single_decker_tram"]').val("");
+	$('.add.record [name="double_decker_tram"]').val("");
+	rooms = $('.add.record .rooms.list .room');
+	for (var i = 0; i < rooms.length; i++){
+		if(i < 2){
+			$(rooms[i].querySelector('.room_name.dropdown')).dropdown("clear");
+			$(rooms[i].querySelector('.room_name.dropdown')).dropdown("set text", "ที่พัก");
+			$(rooms[i].querySelector('[name="room_price"]')).val("");
+			$(rooms[i].querySelector('[name="room_quantity"]')).val("");
+		}else{
+			rooms[i].remove();
+		}
+	}
+	$('.add.record [name="meeting_room_name"]').val("");
+	$('.add.record [name="meeting_room_price"]').val("");
+	$('.add.record .activities.dropdown').dropdown("clear");
+	$('.add.record .activities.dropdown').dropdown("set text", "กิจกรรม");
+	$('.add.record [name="contact"]').val("");
+	$('.dimmable.room .dimmer').dimmer({closable: false}).dimmer('show');
+	$('.disabled.field input, .disabled.field .button').attr("tabindex","-1");
 }
 
 function addRecord(){
@@ -155,36 +322,63 @@ function addRecord(){
 	province = $('.add.record [name="province"]').val();
 	country = $('.add.record [name="country"]').val();
 	n_people = $('.add.record [name="n_people"]').val();
-	meal_price = $('.add.record [name="meal_price"]').val();
-	meal_quantity = $('.add.record [name="meal_quantity"]').val();
-	personal_room = $('.add.record [name="personal_room"]').val();
-	personal_room_quantity = $('.add.record [name="personal_room_quantity"]').val();
-	group_room = $('.add.record [name="group_room"]').val();
-	group_room_quantity = $('.add.record [name="group_room_quantity"]').val();
-	meeting_room = $('.add.record [name="meeting_room"]').val();
-
+	meal_breakfast_price = $('.add.record [name="meal_breakfast_price"]').val();
+	meal_lunch_price = $('.add.record [name="meal_lunch_price"]').val();
+	meal_dinner_price = $('.add.record [name="meal_dinner_price"]').val();
+	refreshment_morning_price = $('.add.record [name="refreshment_morning_price"]').val();
+	refreshment_afternoon_price = $('.add.record [name="refreshment_afternoon_price"]').val();
+	refreshment_evening_price = $('.add.record [name="refreshment_evening_price"]').val();
+	single_decker_tram = $('.add.record [name="single_decker_tram"]').val();
+	double_decker_tram = $('.add.record [name="double_decker_tram"]').val();
+	meeting_room_name = $('.add.record [name="meeting_room_name"]').val();
+	meeting_room_price = $('.add.record [name="meeting_room_price"]').val();
+	activities = $('.add.record [name="activities"]').val().split(',');
+	contact = $('.add.record [name="contact"]').val();
+	activities = activities.length > 0 && activities[0].replace(/\s/g, '').length ? JSON.stringify(activities) : null;
+	rooms_array = $('.add.record .rooms.list .room');
+	rooms = Array();
+	for (i = 0; i < rooms_array.length-1; i++){
+		room = Object();
+		name = $(rooms_array[i].querySelector('.add.record [name="room_name"]')).val();
+		price = $(rooms_array[i].querySelector('.add.record [name="room_price"]')).val();
+		quantity = $(rooms_array[i].querySelector('.add.record [name="room_quantity"]')).val();
+		if (name || price || quantity){
+			room.name = name;
+			room.price =   price + " " + $(rooms_array[i].querySelector('.add.record [name="room_price_tag"]')).val();
+			room.quantity =  quantity;
+			rooms.push(room);
+		}
+	}
+	rooms = rooms.length > 0 ? JSON.stringify(rooms) : null;
 	$.ajax({
 		url: './api/record/new.php',
-		dataType: 'JSON',
+		dataType: 'text',
 		type: 'POST',
-		data: { 'doc_number': doc_number,
-				'visit_date': visit_date,
-				'occupation': occupation,
-				'n_people': n_people,
-				'address': address,
-				'district': district,
-				'province': province,
-				'country': country,
-				'meal_price': meal_price,
-				'meal_quantity': meal_quantity,
-				'personal_room': personal_room,
-				'personal_room_quantity': personal_room_quantity,
-				'group_room': group_room,
-				'group_room_quantity': group_room_quantity,
-				'meeting_room': meeting_room
-			},
+		data: { 
+			'doc_number': doc_number,
+			'visit_date': visit_date,
+			'occupation': occupation,
+			'n_people': n_people,
+			'address': address,
+			'district': district,
+			'province': province,
+			'country': country,
+			'meal_breakfast_price': meal_breakfast_price,
+			'meal_lunch_price': meal_lunch_price,
+			'meal_dinner_price': meal_dinner_price,
+			'refreshment_morning_price': refreshment_morning_price,
+			'refreshment_afternoon_price': refreshment_afternoon_price,
+			'refreshment_evening_price': refreshment_evening_price,
+			'meeting_room_name': meeting_room_name,
+			'meeting_room_price': meeting_room_price,
+			'single_decker_tram': single_decker_tram,
+			'double_decker_tram': double_decker_tram,
+			'rooms': rooms,
+			'activities': activities,
+			'contact': contact
+		},
 		success: function( data, textStatus, jQxhr ){
-			console.log(data['message']);
+			console.log(data);
 			$('.add.record.modal').modal("hide");
 			applyFilter();
 		},
@@ -212,27 +406,12 @@ function readRecordByRecordTime(time){
 	$.ajax({
 		url: "./api/record/read_one.php",
 		dataType: "JSON",
-		type: "POST",
+		type: "GET",
 		data: {
 			'record_time': time
 		},
 		success: function(data, textStatus, jQxhr){
-			$('.edit.record [name="doc_number"]').val(data['doc_number']);
-			$('.edit.record [name="visit_date"]').val(data['visit_date']);
-			$('.edit.record .occupation.dropdown').dropdown("set selected", data['occupation']);
-			$('.edit.record [name="address"]').val(data['address']);
-			$('.edit.record [name="district"]').val(data['district']);
-			$('.edit.record .province.dropdown').dropdown("set selected", data['province']);
-			$('.edit.record .country.dropdown').dropdown("set selected", data['country']);
-			$('.edit.record [name="n_people"]').val(data['n_people']);
-			$('.edit.record [name="meal_price"]').val(data['meal_price']);
-			$('.edit.record [name="meal_quantity"]').val(data['meal_quantity']);
-			$('.edit.record [name="personal_room"]').val(data['personal_room']);
-			$('.edit.record [name="personal_room_quantity"]').val(data['personal_room_quantity']);
-			$('.edit.record [name="group_room"]').val(data['group_room']);
-			$('.edit.record [name="group_room_quantity"]').val(data['group_room_quantity']);
-			$('.edit.record [name="meeting_room"]').val(data['meeting_room']);
-			$('.edit.record .teal.button').attr("onclick", "editRecord('"+time+"');");
+			$('.edit.record').attr("data-json", JSON.stringify(data));
 			editRecordModal();
 		},
 		error: function(jqXHR, exception) {
@@ -256,8 +435,62 @@ function readRecordByRecordTime(time){
 }
 
 function editRecordModal(){
+	$('.ui.edit.record.modal').modal({onShow: function(){
+		data = JSON.parse(document.querySelector('.edit.record.modal').dataset.json);
+		$('.edit.record [name="doc_number"]').val(data['doc_number']);
+		$('.edit.record [name="visit_date"]').val(data['visit_date']);
+		$('.edit.record .occupation.dropdown').dropdown("set selected", data['occupation']);
+		$('.edit.record [name="address"]').val(data['address']);
+		$('.edit.record [name="district"]').val(data['district']);
+		$('.edit.record .province.dropdown').dropdown("set selected", data['province']);
+		$('.edit.record .country.dropdown').dropdown("set selected", data['country']);
+		$('.edit.record [name="n_people"]').val(data['n_people']);
+		$('.edit.record [name="meal_breakfast_price"]').val(data['meal_breakfast_price']);
+		$('.edit.record [name="meal_lunch_price"]').val(data['meal_lunch_price']);
+		$('.edit.record [name="meal_dinner_price"]').val(data['meal_dinner_price']);
+		$('.edit.record [name="refreshment_morning_price"]').val(data['refreshment_morning_price']);
+		$('.edit.record [name="refreshment_afternoon_price"]').val(data['refreshment_afternoon_price']);
+		$('.edit.record [name="refreshment_evening_price"]').val(data['refreshment_evening_price']);
+		$('.edit.record [name="single_decker_tram"]').val(data['single_decker_tram']);
+		$('.edit.record [name="double_decker_tram"]').val(data['double_decker_tram']);
+		$('.edit.record .meeting_room_name.dropdown').dropdown("set selected", data['meeting_room_name']?data['meeting_room_name']:"");
+		$('.edit.record [name="meeting_room_price"]').val(data['meeting_room_price']);
+		$('.edit.record .activities.dropdown').dropdown("set selected", data['activities']);
+		$('.edit.record [name="contact"]').val(data['contact']);
+		$('.edit.record .teal.button').attr("onclick", "editRecord('"+data['record_time']+"');");
+		rooms = data['rooms'];
+		rooms_array = $('.edit.record .rooms.list .room');
+		for (i = 0; i < rooms_array.length; i++){
+			if (i == 0){
+				$(rooms_array[i].querySelector('.room_name.dropdown')).dropdown("set selected", "");
+				$(rooms_array[i].querySelector('[name="room_price"]')).val("");
+				$(rooms_array[i].querySelector('.room_price_tag.dropdown')).dropdown("set selected", "บาท/คน");
+				$(rooms_array[i].querySelector('[name="room_quantity"]')).val("");
+			}else{
+				rooms_array[i].remove();
+			}
+		}
+		if(rooms != null){
+			for (i = 0; i < rooms.length; i++){
+				price = rooms[i]['price'].split(' ');
+				name = rooms[i]['name'];
+				quantity = rooms[i]['quantity'];
+				if(i > 0){
+					addRoom('edit', name, price[0], price[1], quantity);
+				}else{
+					$(rooms_array[0].querySelector('.room_name.dropdown')).dropdown("set selected", name);
+					$(rooms_array[0].querySelector('[name="room_price"]')).val(price[0]);
+					$(rooms_array[0].querySelector('.room_price_tag.dropdown')).dropdown("set selected", price[1]);
+					$(rooms_array[0].querySelector('[name="room_quantity"]')).val(quantity);
+				}
+			}
+			addRoom('edit');
+		}
+	}});
 	$('.ui.edit.record.modal').modal('show');
 }
+
+
 
 function editRecord(time){
 	doc_number = $('.edit.record [name="doc_number"]').val();
@@ -268,35 +501,62 @@ function editRecord(time){
 	province = $('.edit.record [name="province"]').val();
 	country = $('.edit.record [name="country"]').val();
 	n_people = $('.edit.record [name="n_people"]').val();
-	meal_price = $('.edit.record [name="meal_price"]').val();
-	meal_quantity = $('.edit.record [name="meal_quantity"]').val();
-	personal_room = $('.edit.record [name="personal_room"]').val();
-	personal_room_quantity = $('.edit.record [name="personal_room_quantity"]').val();
-	group_room = $('.edit.record [name="group_room"]').val();
-	group_room_quantity = $('.edit.record [name="group_room_quantity"]').val();
-	meeting_room = $('.edit.record [name="meeting_room"]').val();
-
+	meal_breakfast_price = $('.edit.record [name="meal_breakfast_price"]').val();
+	meal_lunch_price = $('.edit.record [name="meal_lunch_price"]').val();
+	meal_dinner_price = $('.edit.record [name="meal_dinner_price"]').val();
+	refreshment_morning_price = $('.edit.record [name="refreshment_morning_price"]').val();
+	refreshment_afternoon_price = $('.edit.record [name="refreshment_afternoon_price"]').val();
+	refreshment_evening_price = $('.edit.record [name="refreshment_evening_price"]').val();
+	single_decker_tram = $('.edit.record [name="single_decker_tram"]').val();
+	double_decker_tram = $('.edit.record [name="double_decker_tram"]').val();
+	meeting_room_name = $('.edit.record [name="meeting_room_name"]').val();
+	meeting_room_price = $('.edit.record [name="meeting_room_price"]').val();
+	activities = $('.edit.record [name="activities"]').val().split(',');
+	contact = $('.edit.record [name="contact"]').val();
+	activities = activities.length > 0 && activities[0].replace(/\s/g, '').length ? JSON.stringify(activities) : null;
+	rooms_array = $('.edit.record .rooms.list .room');
+	rooms = Array();
+	for (i = 0; i < rooms_array.length-1; i++){
+		room = Object();
+		name = $(rooms_array[i].querySelector('.edit.record [name="room_name"]')).val();
+		price = $(rooms_array[i].querySelector('.edit.record [name="room_price"]')).val();
+		quantity = $(rooms_array[i].querySelector('.edit.record [name="room_quantity"]')).val();
+		if (name || price || quantity){
+			room.name = name;
+			room.price =   price + " " + $(rooms_array[i].querySelector('.edit.record [name="room_price_tag"]')).val();
+			room.quantity =  quantity;
+			rooms.push(room);
+		}
+	}
+	rooms = rooms.length > 0 ? JSON.stringify(rooms) : null;
 	$.ajax({
 		url: './api/record/edit_one.php',
 		dataType: 'text',
 		type: 'POST',
-		data: { 'record_time': time,
-				'doc_number': doc_number,
-				'visit_date': visit_date,
-				'occupation': occupation,
-				'n_people': n_people,
-				'address': address,
-				'district': district,
-				'province': province,
-				'country': country,
-				'meal_price': meal_price,
-				'meal_quantity': meal_quantity,
-				'personal_room': personal_room,
-				'personal_room_quantity': personal_room_quantity,
-				'group_room': group_room,
-				'group_room_quantity': group_room_quantity,
-				'meeting_room': meeting_room
-			},
+		data: { 
+			'record_time': time,
+			'doc_number': doc_number,
+			'visit_date': visit_date,
+			'occupation': occupation,
+			'n_people': n_people,
+			'address': address,
+			'district': district,
+			'province': province,
+			'country': country,
+			'meal_breakfast_price': meal_breakfast_price,
+			'meal_lunch_price': meal_lunch_price,
+			'meal_dinner_price': meal_dinner_price,
+			'refreshment_morning_price': refreshment_morning_price,
+			'refreshment_afternoon_price': refreshment_afternoon_price,
+			'refreshment_evening_price': refreshment_evening_price,
+			'meeting_room_name': meeting_room_name,
+			'meeting_room_price': meeting_room_price,
+			'single_decker_tram': single_decker_tram,
+			'double_decker_tram': double_decker_tram,
+			'rooms': rooms,
+			'activities': activities,
+			'contact': contact
+		},
 		success: function( data, textStatus, jQxhr ){
 			console.log(data);
 			$('.edit.record.modal').modal("hide");
@@ -374,7 +634,7 @@ function loadUser(){
 			$('[data-id="new"] [name="username"]').val("");
 			$('[data-id="new"] [name="password"]').val("");
 			$('[data-id="new"] .is_admin.checkbox').checkbox("uncheck");
-			if(result['data'] === undefined || result['data'].lenght == 0){
+			if(result['data'] === undefined || result['data'].length == 0){
 				$('.user.table tbody').html("<tr><td colspan=\"4\">ไม่พบข้อมูลผู้ใช้</td></tr>");
 			}else{
 				$('.user.table tbody').html("");
