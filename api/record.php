@@ -1,8 +1,7 @@
 <?php
 class Record{
-	private $conn;
 	private $table_name = "RECORDS";
-
+	private $conn;
 	public  $record_time;
 	public  $doc_number;
 	public  $visit_date;
@@ -25,9 +24,11 @@ class Record{
 	public	$rooms;
 	public  $activities;
 	public  $contact;
+	public $res;
 
 	public function __construct($db){
-		$this->conn = $db;
+		$this->res = $db->res;
+		$this->conn = $db->getConnection();
 	}
 
 	function readOne(){
@@ -59,7 +60,8 @@ class Record{
 			$this->activities = json_decode($row['activities']);
 			$this->contact = $row['contact'];
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
 	}
 
@@ -69,7 +71,8 @@ class Record{
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
 		return $stmt;
 	}
@@ -80,7 +83,8 @@ class Record{
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
 		return $stmt;
 	}
@@ -90,10 +94,11 @@ class Record{
 			$query = "SELECT * FROM {$this->table_name} WHERE occupation LIKE '{$occupation}' AND province LIKE '{$province}' AND month(visit_date) LIKE '{$month}' AND year(visit_date) LIKE '{$year}' AND country LIKE '{$country}' ORDER BY record_time DESC";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 
 	function editOne(){
@@ -102,7 +107,8 @@ class Record{
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
 		return $stmt;
 	}
@@ -112,10 +118,11 @@ class Record{
 			$query = "DELETE FROM {$this->table_name} WHERE record_time = '{$this->record_time}'";
 			$stmt = $this->conn->prepare($query);
 			$stmt->execute();
-			return $stmt;
 		} catch (PDOException $e) {
-			echo "\"error\": \"{$e->getMessage()}\",";
+			$this->res['success'] = false;
+			$this->res['error'] = $e->getMessage();
 		}
+		return $stmt;
 	}
 }
 ?>

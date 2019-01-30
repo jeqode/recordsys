@@ -13,7 +13,6 @@
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/semantic.min.js"></script>
-	<script src="js/jquery.tablesort.min.js"></script>
 	<script src="js/script.js"></script>
 </head>
 <?php

@@ -352,7 +352,7 @@ function addRecord(){
 	rooms = rooms.length > 0 ? JSON.stringify(rooms) : null;
 	$.ajax({
 		url: './api/record/new.php',
-		dataType: 'text',
+		dataType: 'JSON',
 		type: 'POST',
 		data: { 
 			'doc_number': doc_number,
@@ -411,7 +411,7 @@ function readRecordByRecordTime(time){
 			'record_time': time
 		},
 		success: function(data, textStatus, jQxhr){
-			$('.edit.record').attr("data-json", JSON.stringify(data));
+			$('.edit.record').attr("data-json", JSON.stringify(data['data']));
 			editRecordModal();
 		},
 		error: function(jqXHR, exception) {
@@ -531,7 +531,7 @@ function editRecord(time){
 	rooms = rooms.length > 0 ? JSON.stringify(rooms) : null;
 	$.ajax({
 		url: './api/record/edit_one.php',
-		dataType: 'text',
+		dataType: 'JSON',
 		type: 'POST',
 		data: { 
 			'record_time': time,

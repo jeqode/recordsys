@@ -2,9 +2,7 @@
 include_once '../config/database.php';
 include_once '../record.php';
 
-$database = new Database();
-$db = $database->getConnection();
-
+$db = new Database();
 $record = new Record($db);
 $month = isset($_GET['month']) ? $_GET['month'] : "%";
 $year = isset($_GET['year']) ? $_GET['year'] : "%";
@@ -135,8 +133,8 @@ $num = $stmt->rowCount();
 	</div>
 	<script>
 		window.onbeforeunload = function(){return false;};
-        setTimeout(function(){window.close();}, 10000);
-        window.print();
+		setTimeout(function(){window.close();}, 10000);
+		window.print();
 	</script>
 </body>
 </html>

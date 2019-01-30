@@ -6,9 +6,7 @@ header("AccessControl-Allow-Credentials: true");
 header("Content-Type: application/json");
 include_once '../config/database.php';
 include_once '../record.php';
-echo "{";
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();;
 $record = new Record($db);
 $record->record_time =  isset($_POST['record_time']) && $_POST['record_time'] ? "'".$_POST['record_time']."'" : "NULL";
 $record->doc_number =  isset($_POST['doc_number']) && $_POST['doc_number'] ? "'".$_POST['doc_number']."'" : "NULL";
@@ -35,12 +33,11 @@ $record->contact =  isset($_POST['contact']) && $_POST['contact'] ? "'".$_POST['
 
 $stmt = $record->new();
 $num = $stmt->rowCount();
-$success = "true";
 if($num){
-	echo "\"meassage\": \"เพิ่ม {$num} ข้อมูลสำเร็จ\",";
+	$record->res['message'] = "เพิ่ม {$num} ข้อมูลสำเร็จ";
 }else{
-	$success = "false";
-	echo "\"meassage\": \"ไม่สามารถเพิ่มข้อมูลได้ !\",";
+	$record->res['success'] = false;
+	$record->res['message'] = "ไม่สามารถเพิ่มข้อมูลได้ !";
 }
-echo "\"success\": {$success}}";
+echo json_encode($record->res);
 ?>

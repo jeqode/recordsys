@@ -7,8 +7,7 @@ header("Content-Type: application/json");
 include_once '../config/database.php';
 include_once '../record.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = new Database();
 $record = new Record($db);
 $record->record_time =  isset($_POST['record_time']) && $_POST['record_time'] ? "'".$_POST['record_time']."'" : "NULL";
 $record->doc_number =  isset($_POST['doc_number']) && $_POST['doc_number'] ? "'".$_POST['doc_number']."'" : "NULL";
@@ -34,12 +33,10 @@ $record->activities =  isset($_POST['activities']) && $_POST['activities'] ? "'"
 $record->contact =  isset($_POST['contact']) && $_POST['contact'] ? "'".$_POST['contact']."'" : "NULL";
 $stmt = $record->editOne();
 $num = $stmt->rowCount();
-
 if($num){
-    print("{\"message\": \"แก้ไขข้อมูล {$num} รายการสำเร็จ\"}");
+	$record->res['message'] = "แก้ไขข้อมูล {$num} รายการสำเร็จ";
 }else{
-    print("{\"message\": ไม่มีการแก้ไขข้อมูล\"}");
+	$record->res['message'] = "ไม่มีการแก้ไขข้อมูล";
 }
-
-
+echo json_encode($record->res);
 ?>
